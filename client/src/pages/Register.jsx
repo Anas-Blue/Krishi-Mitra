@@ -31,7 +31,8 @@ export default function Register() {
     }
   }
 
-  const inputClass = "w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-agri-500 transition-colors";
+  const inputClass = "w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white placeholder-slate-400 focus:outline-none focus:border-agri-500 focus:ring-1 focus:ring-agri-500 transition-colors";
+  const selectClass = "w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-agri-500 focus:ring-1 focus:ring-agri-500 transition-colors cursor-pointer";
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-12">
@@ -90,9 +91,9 @@ export default function Register() {
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1">राज्य / State</label>
-                <select id="reg-state" name="state" value={form.state} onChange={handleChange} className={inputClass + " cursor-pointer"}>
-                  <option value="">Select state</option>
-                  {STATES.map((s) => <option key={s} value={s}>{s}</option>)}
+                <select id="reg-state" name="state" value={form.state} onChange={handleChange} className={selectClass}>
+                  <option value="" style={{ backgroundColor: '#1e293b', color: '#94a3b8' }}>Select state</option>
+                  {STATES.map((s) => <option key={s} value={s} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>{s}</option>)}
                 </select>
               </div>
             </div>
@@ -101,7 +102,7 @@ export default function Register() {
               <label className="block text-xs font-medium text-slate-300 mb-1">भाषा / Language</label>
               <div className="flex gap-3">
                 {[['en', '🇬🇧 English'], ['hi', '🇮🇳 हिन्दी']].map(([val, label]) => (
-                  <label key={val} className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg border cursor-pointer transition-colors text-xs font-medium ${form.language === val ? 'border-agri-500 bg-agri-900/40 text-agri-300' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
+                  <label key={val} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border cursor-pointer transition-colors text-sm font-medium ${form.language === val ? 'border-agri-500 bg-agri-600 text-white' : 'border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-600 hover:bg-slate-750'}`}>
                     <input type="radio" name="language" value={val} checked={form.language === val} onChange={handleChange} className="hidden" />
                     {label}
                   </label>

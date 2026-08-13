@@ -93,45 +93,45 @@ export default function Landing() {
           {[
             {
               icon: (
-                <svg className="w-6 h-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#2e7d32" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               ),
               bgColor: '#e8f5e9',
-              darkBgColor: 'rgba(20, 83, 45, 0.4)',
+              darkBgColor: 'rgba(46, 125, 50, 0.2)',
               title: 'Yield Prediction',
               desc: 'AI models predict your crop yield with high accuracy.',
             },
             {
               icon: (
-                <svg className="w-6 h-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#0288d1" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
                 </svg>
               ),
-              bgColor: '#e8f5e9',
-              darkBgColor: 'rgba(20, 83, 45, 0.4)',
+              bgColor: '#e0f7fa',
+              darkBgColor: 'rgba(2, 136, 209, 0.2)',
               title: 'Weather & GDD',
               desc: 'Real-time weather updates and Growing Degree Days tracking.',
             },
             {
               icon: (
-                <svg className="w-6 h-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#2e7d32" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               ),
               bgColor: '#e8f5e9',
-              darkBgColor: 'rgba(20, 83, 45, 0.4)',
+              darkBgColor: 'rgba(46, 125, 50, 0.2)',
               title: 'Crop Lifecycle',
               desc: 'Stage-wise guidance from sowing to harvest for better planning.',
             },
             {
               icon: (
-                <svg className="w-6 h-6 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
+                <svg className="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="#f57c00" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
               ),
-              bgColor: '#e8f5e9',
-              darkBgColor: 'rgba(20, 83, 45, 0.4)',
+              bgColor: '#fff3e0',
+              darkBgColor: 'rgba(245, 124, 0, 0.2)',
               title: 'AI Krishi Assistant',
               desc: 'Get answers to your farming queries instantly with our AI assistant.',
             },
@@ -147,7 +147,7 @@ export default function Landing() {
               {/* Perfectly centered circle background for clean icons */}
               <div
                 style={{ backgroundColor: isDark ? card.darkBgColor : card.bgColor }}
-                className={`w-12 h-12 rounded-full flex items-center justify-center mb-4 group-hover:scale-105 transition-transform`}
+                className="w-14 h-14 rounded-full flex items-center justify-center mb-4 group-hover:scale-105 transition-transform"
               >
                 {card.icon}
               </div>
@@ -173,9 +173,9 @@ export default function Landing() {
         </div>
 
         {/* Steps Grid with connect dots/lines */}
-        <div className="grid md:grid-cols-4 gap-8 md:gap-4 relative">
+        <div className="grid md:grid-cols-4 gap-8 md:gap-6 relative">
           {/* Dotted connected line between steps for desktop — centered at 48px */}
-          <div className="hidden md:block absolute top-[48px] left-[12%] right-[12%] border-t-2 border-dotted border-gray-200 dark:border-slate-800 z-0" />
+          <div className="hidden md:block absolute top-[48px] left-[12%] right-[12%] border-t-2 border-dotted border-gray-300 dark:border-slate-700 z-0" />
 
           {[
             {
@@ -183,13 +183,12 @@ export default function Landing() {
               title: 'Know Your Field',
               desc: 'Tell us about your crop, location, soil, and cultivation details.',
               bgColor: '#e8f5e9',
-              darkBgColor: 'rgba(20, 83, 45, 0.4)',
+              darkBgColor: 'rgba(46, 125, 50, 0.2)',
               iconColor: '#2e7d32',
               icon: (
-                // Field icon with location pin
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                // Sprout/Plant icon
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#2e7d32" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 2C12 8 8 10 3 10c0 6 4 8 9 8m0-16c0 6 4 8 9 8-5 0-9 2-9 8m0 0v4" />
                 </svg>
               )
             },
@@ -198,13 +197,13 @@ export default function Landing() {
               title: 'Understand Conditions',
               desc: 'We analyze weather, temperature, rainfall, and Growing Degree Days.',
               bgColor: '#e0f7fa',
-              darkBgColor: 'rgba(0, 131, 143, 0.3)',
-              iconColor: '#00838f',
+              darkBgColor: 'rgba(2, 136, 209, 0.2)',
+              iconColor: '#0288d1',
               icon: (
-                // Rain cloud with thermometer
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                // Rain cloud with drops
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#0288d1" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 21v-2m4 2v-2" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 19v1m4-1v1m4-1v1" />
                 </svg>
               )
             },
@@ -213,16 +212,13 @@ export default function Landing() {
               title: 'Get AI Insights',
               desc: 'Our models predict yield and generate crop-specific recommendations.',
               bgColor: '#e8f5e9',
-              darkBgColor: 'rgba(46, 125, 50, 0.4)',
+              darkBgColor: 'rgba(46, 125, 50, 0.2)',
               iconColor: '#2e7d32',
               icon: (
-                // Neural net nodes
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                  <circle cx="12" cy="5" r="2.5" />
-                  <circle cx="6" cy="12" r="2.5" />
-                  <circle cx="18" cy="12" r="2.5" />
-                  <circle cx="12" cy="19" r="2.5" />
-                  <path d="M12 7.5v9M7.5 12h9" strokeLinecap="round" />
+                // Growth chart trending up
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#2e7d32" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 8l-4 4-3-3-3 3" />
                 </svg>
               )
             },
@@ -231,11 +227,11 @@ export default function Landing() {
               title: 'Verify Before You Act',
               desc: 'Recommendations are checked for risks before reaching the farmer.',
               bgColor: '#fff3e0',
-              darkBgColor: 'rgba(239, 108, 0, 0.3)',
-              iconColor: '#ef6c00',
+              darkBgColor: 'rgba(245, 124, 0, 0.2)',
+              iconColor: '#f57c00',
               icon: (
-                // Shield check icon
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                // Shield check with plant
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#f57c00" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               )
@@ -244,34 +240,33 @@ export default function Landing() {
             <div key={item.step} className="relative flex flex-col items-center text-center px-4 z-10 group">
               {/* Perfectly centered circle background for clean icons */}
               <div
-                style={{
-                  backgroundColor: isDark ? item.darkBgColor : item.bgColor,
-                  color: item.iconColor
-                }}
-                className={`w-24 h-24 rounded-full flex items-center justify-center border shadow-xs transition-transform duration-300 group-hover:scale-105 ${
-                  isDark ? 'border-slate-800' : 'border-gray-150'
+                style={{ backgroundColor: isDark ? item.darkBgColor : item.bgColor }}
+                className={`w-24 h-24 rounded-full flex items-center justify-center border shadow-sm transition-transform duration-300 group-hover:scale-105 ${
+                  isDark ? 'border-slate-800' : 'border-gray-200'
                 }`}
               >
                 {item.icon}
-                {/* Number indicator */}
-                <span className={`absolute top-0 right-[22%] w-7 h-7 rounded-full border flex items-center justify-center text-xs font-bold shadow-xs ${
-                  isDark ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-white border-gray-200 text-gray-700'
+                {/* Number indicator - positioned closer to the circle */}
+                <span className={`absolute -top-2 -right-2 w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs font-bold shadow-sm ${
+                  isDark ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-white border-gray-300 text-slate-700'
                 }`}>
                   {item.step}
                 </span>
               </div>
 
-              {/* Dotted desktop connector arrow inside the gap — centered at 32px */}
+              {/* Connector arrow between steps - positioned exactly on the dotted line */}
               {idx < 3 && (
-                <div className="hidden md:block absolute top-[32px] -right-[15px] z-20 w-8 h-8 rounded-full bg-white border border-gray-100 dark:bg-slate-900 dark:border-slate-800 flex items-center justify-center shadow-xs">
-                  <svg className="w-4 h-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3.5}>
+                <div className={`hidden md:flex absolute top-[48px] -translate-y-1/2 -right-[calc((100%-96px)/2)] w-6 h-6 rounded-full items-center justify-center z-20 ${
+                  isDark ? 'bg-slate-900 border border-slate-700' : 'bg-white border border-gray-300'
+                } shadow-sm`}>
+                  <svg className={`w-3.5 h-3.5 ${isDark ? 'text-green-400' : 'text-green-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
               )}
 
               <h3 className={`font-bold text-lg mt-6 mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>{item.title}</h3>
-              <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-gray-500'}`}>{item.desc}</p>
+              <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>{item.desc}</p>
             </div>
           ))}
         </div>
