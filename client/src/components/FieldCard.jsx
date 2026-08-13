@@ -16,8 +16,6 @@ const STAGE_LABELS = {
   mature: 'परिपक्व / Mature',
 };
 
-const CROP_EMOJIS = { rice: '🌾', wheat: '🌿', maize: '🌽' };
-
 export default function FieldCard({ field }) {
   const stage = field.current?.stage || 'seedling';
   const gddPct = Math.round((field.current?.gddPct || 0) * 100);
@@ -34,7 +32,6 @@ export default function FieldCard({ field }) {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <span className="text-2xl">{CROP_EMOJIS[field.crop] || '🌱'}</span>
             <div>
               <h3 className="font-semibold text-white text-base">{field.name}</h3>
               <p className="text-slate-400 text-xs">{field.location?.district}, {field.location?.state}</p>

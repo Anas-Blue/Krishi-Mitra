@@ -49,7 +49,6 @@ export default function Alerts() {
         <div className="flex justify-center py-20"><div className="spinner" /></div>
       ) : events.length === 0 ? (
         <div className="glass-card p-16 text-center">
-          <div className="text-5xl mb-4">🔔</div>
           <p className="text-slate-400">No alerts yet</p>
           <p className="text-slate-500 text-sm mt-1">अभी कोई सूचना नहीं है — खेत की जाँच करें</p>
         </div>

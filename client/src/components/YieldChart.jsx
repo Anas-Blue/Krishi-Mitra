@@ -16,7 +16,7 @@ export default function YieldChart({ history }) {
   if (!history || history.length < 2) {
     return (
       <div className="glass-card p-4 text-center text-slate-500 text-sm py-8">
-        <p>📊 Yield evolution chart will appear after 2+ checks</p>
+        <p>Yield evolution chart will appear after 2+ checks</p>
         <p className="text-xs mt-1">उपज विकास — कम से कम 2 जाँच के बाद</p>
       </div>
     );
@@ -31,7 +31,7 @@ export default function YieldChart({ history }) {
 
   return (
     <div className="glass-card p-4">
-      <h3 className="text-sm font-semibold text-white mb-4">📈 Yield Evolution / उपज विकास</h3>
+      <h3 className="text-sm font-semibold text-white mb-4">Yield Evolution / उपज विकास</h3>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={data}>
           <XAxis dataKey="date" stroke="#475569" tick={{ fill: '#94a3b8', fontSize: 11 }} />

@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { createField } from '../api/fieldsApi';
 
 const CROPS = [
-  { value: 'rice', label: 'Rice / धान', emoji: '🌾' },
-  { value: 'wheat', label: 'Wheat / गेहूं', emoji: '🌿' },
-  { value: 'maize', label: 'Maize / मक्का', emoji: '🌽' },
+  { value: 'rice', label: 'Rice / धान' },
+  { value: 'wheat', label: 'Wheat / गेहूं' },
+  { value: 'maize', label: 'Maize / मक्का' },
 ];
 
 export default function FieldNew() {
@@ -83,8 +83,7 @@ export default function FieldNew() {
             <div className="grid grid-cols-3 gap-3">
               {CROPS.map((c) => (
                 <button key={c.value} type="button" onClick={() => update('crop', c.value)}
-                  className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${form.crop === c.value ? 'border-agri-500 bg-agri-900/40 text-agri-400' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
-                  <span className="text-3xl">{c.emoji}</span>
+                  className={`p-4 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${form.crop === c.value ? 'border-agri-500 bg-agri-900/40 text-agri-400' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
                   <span className="text-xs font-medium">{c.label}</span>
                 </button>
               ))}
@@ -138,7 +137,7 @@ export default function FieldNew() {
               <input id="loc-lon" type="number" step="0.0001" value={form.location.lon} onChange={(e) => updateLoc('lon', e.target.value)} placeholder="81.2045" className={inputClass} />
             </div>
           </div>
-          <p className="text-xs text-slate-500">💡 Find lat/lon on Google Maps: right-click → What's here?</p>
+          <p className="text-xs text-slate-500">Find lat/lon on Google Maps: right-click → What's here?</p>
           <div className="flex gap-3">
             <button onClick={() => setStep(1)} className="flex-1 py-3 border border-white/10 text-slate-400 rounded-lg hover:bg-white/5 transition-colors">← Back</button>
             <button
@@ -181,7 +180,7 @@ export default function FieldNew() {
               disabled={loading}
               className="flex-1 py-3 bg-agri-600 hover:bg-agri-500 disabled:opacity-50 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
             >
-              {loading ? <><div className="spinner w-5 h-5" /> Creating & checking...</> : '🌾 Create Field'}
+              {loading ? <><div className="spinner w-5 h-5" /> Creating & checking...</> : 'Create Field'}
             </button>
           </div>
         </div>
