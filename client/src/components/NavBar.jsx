@@ -63,17 +63,9 @@ export default function NavBar() {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Logo and Brand */}
-        <Link to={user ? (isAdmin ? '/admin' : '/dashboard') : '/'} className="flex items-center gap-2 group">
-          <span className="text-2xl">🌾</span>
-          <div className="flex flex-col leading-tight">
-            <span className={`font-extrabold text-lg tracking-tight transition-colors ${theme === 'dark' ? 'text-white' : 'text-slate-900'}`} style={{ fontFamily: "'Poppins', sans-serif" }}>
-              Krishi<span className="text-green-600">Mitra</span>
-            </span>
-            <span className={`text-[10px] font-medium -mt-0.5 ${theme === 'dark' ? 'text-slate-400' : 'text-gray-400'}`}>
-              Smarter Farming, Better Future
-            </span>
-          </div>
+        {/* Logo */}
+        <Link to={user ? (isAdmin ? '/admin' : '/dashboard') : '/'} className="flex items-center gap-2">
+          <span className="font-bold text-agri-400 text-lg font-outfit">KrishiMitra</span>
         </Link>
 
         {/* Navigation Links */}

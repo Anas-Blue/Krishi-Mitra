@@ -29,11 +29,11 @@ export default function GDDProgressBar({ gddPct, stage, cumGdd, maturityGdd }) {
       </div>
       {/* Stage milestone markers */}
       <div className="flex justify-between mt-1 text-xs text-slate-500">
-        <span>🌱 20%</span>
-        <span>🌿 45%</span>
-        <span>🌸 65%</span>
-        <span>🌾 90%</span>
-        <span>✅ 100%</span>
+        <span>20%</span>
+        <span>45%</span>
+        <span>65%</span>
+        <span>90%</span>
+        <span>100%</span>
       </div>
     </div>
   );

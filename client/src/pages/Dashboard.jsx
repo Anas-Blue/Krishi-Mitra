@@ -25,65 +25,56 @@ export default function Dashboard() {
 
   const unread = recentEvents.filter((e) => !e.read).length;
 
+  // Averaging yields across crops only means something when the units agree —
+  // mixing rice (t/ha) with coconut (nuts/ha) would produce a nonsense figure.
+  const avgYield = (() => {
+    const scored = fields.filter((f) => f.current?.yieldEstimate > 0);
+    if (scored.length === 0) return '—';
+    const units = new Set(scored.map((f) => f.current?.yieldUnit || 't/ha'));
+    if (units.size > 1) return 'mixed units';
+    const unit = [...units][0];
+    const mean = scored.reduce((s, f) => s + f.current.yieldEstimate, 0) / scored.length;
+    return `${mean.toFixed(unit === 'nuts/ha' ? 0 : 2)} ${unit}`;
+  })();
+
   if (loading) {
     return <div className="flex items-center justify-center h-64"><div className="spinner" /></div>;
   }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 fade-in">
-      {/* Welcome Banner with Farmer Photo */}
-      <div className="relative rounded-2xl overflow-hidden glass-card p-6 md:p-8 mb-8 border border-agri-500/30 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-950/90">
-        <div className="grid md:grid-cols-12 gap-6 items-center">
-          <div className="md:col-span-8 z-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-agri-900/80 border border-agri-600/40 text-agri-300 text-xs font-semibold mb-3">
-              <span>🌾</span> KrishiMitra Farmer Portal
-            </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-white font-sans mb-2">
-              नमस्ते, {user.name.split(' ')[0]} 👋
-            </h1>
-            <p className="text-slate-300 text-sm md:text-base max-w-xl">
-              Welcome back to your crop dashboard! Your registered fields are being tracked with GDD heat units, Open-Meteo weather intelligence, and verified advisory checks.
-            </p>
-            <div className="flex flex-wrap items-center gap-3 mt-6">
-              <Link
-                to="/fields/new"
-                className="flex items-center gap-2 bg-agri-600 hover:bg-agri-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all agri-glow"
-              >
-                + नया खेत / Add Field
-              </Link>
-              {unread > 0 && (
-                <Link to="/alerts" className="flex items-center gap-2 bg-red-900/50 border border-red-700 text-red-200 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-red-900/70 transition-colors">
-                  🔔 {unread} unread alert{unread !== 1 ? 's' : ''}
-                </Link>
-              )}
-            </div>
-          </div>
-          <div className="md:col-span-4 hidden md:block relative">
-            <div className="relative rounded-xl overflow-hidden border border-white/10 shadow-xl h-40">
-              <img
-                src={farmerHero}
-                alt="Farmer in green crop field"
-                className="w-full h-full object-cover object-center"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
-              <div className="absolute bottom-2 left-3 right-3 text-xs text-slate-200 font-medium truncate">
-                🌱 Active Crop Monitoring
-              </div>
-            </div>
-          </div>
+      {/* Header */}
+      <div className="flex items-start justify-between mb-8 flex-wrap gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white font-outfit">
+            नमस्ते, {user.name.split(' ')[0]}
+          </h1>
+          <p className="text-slate-400 mt-1">Here's your farm overview / आपका खेत सारांश</p>
+        </div>
+        <div className="flex items-center gap-3">
+          {unread > 0 && (
+            <Link to="/alerts" className="flex items-center gap-2 bg-red-900/40 border border-red-800/60 text-red-300 px-4 py-2 rounded-xl text-sm font-medium hover:bg-red-900/60 transition-colors">
+              {unread} unread alert{unread !== 1 ? 's' : ''}
+            </Link>
+          )}
+          <Link
+            to="/fields/new"
+            className="flex items-center gap-2 bg-agri-600 hover:bg-agri-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors agri-glow"
+          >
+            + नया खेत / Add Field
+          </Link>
         </div>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Fields', hindi: 'कुल खेत', value: fields.length, icon: '🌿' },
-          { label: 'Active', hindi: 'सक्रिय', value: fields.filter((f) => f.status === 'active').length, icon: '✅' },
-          { label: 'Avg Yield', hindi: 'औसत उपज', value: fields.length ? (fields.reduce((s, f) => s + (f.current?.yieldEstimate || 0), 0) / fields.length).toFixed(2) + ' t/ha' : '—', icon: '📊' },
-          { label: 'Alerts', hindi: 'सूचनाएं', value: unread, icon: '🔔' },
+          { label: 'Total Fields', hindi: 'कुल खेत', value: fields.length },
+          { label: 'Active', hindi: 'सक्रिय', value: fields.filter((f) => f.status === 'active').length },
+          { label: 'Avg Yield', hindi: 'औसत उपज', value: avgYield },
+          { label: 'Alerts', hindi: 'सूचनाएं', value: unread },
         ].map((s) => (
           <div key={s.label} className="glass-card p-4">
-            <div className="text-2xl mb-2">{s.icon}</div>
             <div className="text-2xl font-bold text-white">{s.value}</div>
             <div className="text-xs text-slate-400">{s.label}</div>
             <div className="text-xs text-slate-500">{s.hindi}</div>
@@ -99,7 +90,6 @@ export default function Dashboard() {
           </div>
           {fields.length === 0 ? (
             <div className="glass-card p-12 text-center">
-              <div className="text-5xl mb-4">🌱</div>
               <p className="text-slate-400 mb-2">No fields registered yet</p>
               <p className="text-slate-500 text-sm mb-6">अभी तक कोई खेत नहीं जोड़ा गया</p>
               <Link to="/fields/new" className="px-6 py-2 bg-agri-600 hover:bg-agri-500 text-white rounded-lg font-medium transition-colors inline-block">

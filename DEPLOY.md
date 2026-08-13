@@ -23,25 +23,33 @@ Three Railway services in one Railway project:
 
 ---
 
-## Step 0 — Train the Model Locally (one-time)
+## Step 0 — Model artifact
+
+`ai-service/yield_model.pkl` is committed, so **no training step is needed to
+deploy**. The dataset is committed too (`ai-service/data/crop_yield.csv`) — no
+Kaggle download required.
+
+Retrain only if you change the data, the features, or the pinned library
+versions:
 
 ```bash
-# Download dataset from Kaggle: "Agricultural Crop Yield in Indian States"
-# Place CSV at: ai-service/data/crop_yield.csv
-
 cd ai-service
 pip install -r requirements.txt
-python train_model.py
+python train_model.py         # prints holdout accuracy, writes yield_model.pkl (~42 MB)
+python export_crop_params.py  # regenerates server/data/cropParams.json
 
-# This prints real MAE and R² — commit the output pkl files
-git add yield_model.pkl label_encoders.pkl
-git commit -m "chore: add trained yield model"
-git push
+git add yield_model.pkl ../server/data/cropParams.json
+git commit -m "chore: retrain yield model"
 ```
 
 > [!IMPORTANT]
-> The `ai-service/Dockerfile` validates that `yield_model.pkl` exists at build time.
-> The build will fail if the model hasn't been trained and committed.
+> The `ai-service/Dockerfile` fails the build if `yield_model.pkl` is missing or
+> is a stale bundle from an older training script.
+
+> [!WARNING]
+> The pickle embeds scikit-learn's internal tree layout. If you bump
+> `scikit-learn` or `numpy` in `requirements.txt`, retrain in the same commit or
+> the service will warn on boot and may not load the model at all.
 
 ---
 

@@ -10,36 +10,21 @@ export default function Landing() {
   const isDark = theme === 'dark';
 
   return (
-    <div className={`transition-colors duration-300 min-h-screen ${isDark ? 'bg-slate-950 text-slate-100' : 'bg-white text-gray-900'}`} style={{ fontFamily: "'Poppins', sans-serif" }}>
+    <div className="min-h-screen flex flex-col">
+      {/* Hero */}
+      <section className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20">
+        <div className="fade-in max-w-3xl">
+          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 leading-tight font-outfit">
+            <span className="text-agri-400">Krishi</span>Mitra
+          </h1>
+          <p className="text-xl text-slate-300 mb-2">AI-Powered Crop Yield Prediction</p>
+          <p className="text-lg text-slate-400 mb-8">कृत्रिम बुद्धिमत्ता से फसल उत्पादन अनुमान</p>
 
-      {/* ─── Hero Section ─── */}
-      <section id="home" className="relative min-h-[88vh] flex items-center overflow-hidden py-12">
-        {/* Background image covering full width, placed on the right */}
-        <img
-          src={farmerHero}
-          alt="Smiling Indian Farmer in lush green crop field"
-          className="absolute inset-0 w-full h-full object-cover object-right sm:object-center"
-          style={{ filter: isDark ? 'brightness(0.5) saturate(1.0)' : 'brightness(1.05) saturate(1.15)' }}
-        />
-
-        {/* Dynamic gradient overlay that fades from white/dark-slate on the left to transparent on the right */}
-        <div className={`absolute inset-0 bg-gradient-to-r ${isDark ? 'from-slate-950 via-slate-950/85 to-transparent' : 'from-white via-white/90 to-transparent'} w-full sm:w-[65%] z-0`} />
-        <div className={`absolute inset-0 bg-gradient-to-t ${isDark ? 'from-slate-950/90 via-transparent to-slate-950/30' : 'from-white/60 via-transparent to-white/30'} z-0`} />
-
-        {/* Hero Content */}
-        <div className="relative z-10 px-6 sm:px-12 lg:px-20 max-w-7xl mx-auto w-full">
-          <div className="max-w-xl">
-            {/* Main Headline */}
-            <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-5 tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Smarter Insights.
-              <br />
-              <span className="text-green-600">Better Yields.</span>
-            </h1>
-
-            {/* Subtext description matching screenshot exactly */}
-            <p className={`text-base sm:text-lg leading-relaxed mb-8 max-w-md ${isDark ? 'text-slate-300' : 'text-gray-600'}`}>
-              Al-powered crop insights, weather intelligence, yield prediction, and trusted farming recommendations — all in one place.
-            </p>
+          <p className="text-slate-400 max-w-xl mx-auto mb-10 leading-relaxed">
+            Monitor your crop from sowing to harvest. Get GDD-based stage tracking, 
+            weather-adjusted yield predictions, and AI-verified recommendations — 
+            where <strong className="text-white">deterministic code, not AI, makes the final decision</strong>.
+          </p>
 
             {/* Call to Actions */}
             <div className="flex flex-wrap items-center gap-4 mb-10">
@@ -178,95 +163,14 @@ export default function Landing() {
           <div className="hidden md:block absolute top-[48px] left-[12%] right-[12%] border-t-2 border-dotted border-gray-300 dark:border-slate-700 z-0" />
 
           {[
-            {
-              step: '01',
-              title: 'Know Your Field',
-              desc: 'Tell us about your crop, location, soil, and cultivation details.',
-              bgColor: '#e8f5e9',
-              darkBgColor: 'rgba(46, 125, 50, 0.2)',
-              iconColor: '#2e7d32',
-              icon: (
-                // Sprout/Plant icon
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#2e7d32" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 2C12 8 8 10 3 10c0 6 4 8 9 8m0-16c0 6 4 8 9 8-5 0-9 2-9 8m0 0v4" />
-                </svg>
-              )
-            },
-            {
-              step: '02',
-              title: 'Understand Conditions',
-              desc: 'We analyze weather, temperature, rainfall, and Growing Degree Days.',
-              bgColor: '#e0f7fa',
-              darkBgColor: 'rgba(2, 136, 209, 0.2)',
-              iconColor: '#0288d1',
-              icon: (
-                // Rain cloud with drops
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#0288d1" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 19v1m4-1v1m4-1v1" />
-                </svg>
-              )
-            },
-            {
-              step: '03',
-              title: 'Get AI Insights',
-              desc: 'Our models predict yield and generate crop-specific recommendations.',
-              bgColor: '#e8f5e9',
-              darkBgColor: 'rgba(46, 125, 50, 0.2)',
-              iconColor: '#2e7d32',
-              icon: (
-                // Growth chart trending up
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#2e7d32" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M16 8l-4 4-3-3-3 3" />
-                </svg>
-              )
-            },
-            {
-              step: '04',
-              title: 'Verify Before You Act',
-              desc: 'Recommendations are checked for risks before reaching the farmer.',
-              bgColor: '#fff3e0',
-              darkBgColor: 'rgba(245, 124, 0, 0.2)',
-              iconColor: '#f57c00',
-              icon: (
-                // Shield check with plant
-                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#f57c00" strokeWidth={1.8}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-              )
-            }
-          ].map((item, idx) => (
-            <div key={item.step} className="relative flex flex-col items-center text-center px-4 z-10 group">
-              {/* Perfectly centered circle background for clean icons */}
-              <div
-                style={{ backgroundColor: isDark ? item.darkBgColor : item.bgColor }}
-                className={`w-24 h-24 rounded-full flex items-center justify-center border shadow-sm transition-transform duration-300 group-hover:scale-105 ${
-                  isDark ? 'border-slate-800' : 'border-gray-200'
-                }`}
-              >
-                {item.icon}
-                {/* Number indicator - positioned closer to the circle */}
-                <span className={`absolute -top-2 -right-2 w-7 h-7 rounded-full border-2 flex items-center justify-center text-xs font-bold shadow-sm ${
-                  isDark ? 'bg-slate-900 border-slate-700 text-slate-200' : 'bg-white border-gray-300 text-slate-700'
-                }`}>
-                  {item.step}
-                </span>
-              </div>
-
-              {/* Connector arrow between steps - positioned exactly on the dotted line */}
-              {idx < 3 && (
-                <div className={`hidden md:flex absolute top-[48px] -translate-y-1/2 -right-[calc((100%-96px)/2)] w-6 h-6 rounded-full items-center justify-center z-20 ${
-                  isDark ? 'bg-slate-900 border border-slate-700' : 'bg-white border border-gray-300'
-                } shadow-sm`}>
-                  <svg className={`w-3.5 h-3.5 ${isDark ? 'text-green-400' : 'text-green-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              )}
-
-              <h3 className={`font-bold text-lg mt-6 mb-2 ${isDark ? 'text-white' : 'text-slate-900'}`}>{item.title}</h3>
-              <p className={`text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-gray-600'}`}>{item.desc}</p>
+            { title: 'GDD-based Tracking', hindi: 'GDD आधारित ट्रैकिंग', desc: 'Growing Degree Days replaces calendar dates for accurate crop stage prediction.' },
+            { title: 'Adversarial AI', hindi: 'प्रतिकूल AI', desc: 'DeepSeek Challenger audits every recommendation. Deterministic code verifies and decides.' },
+            { title: 'Weather Intelligence', hindi: 'मौसम बुद्धिमत्ता', desc: '16-day forecast from Open-Meteo. Auto-detect heat stress, dry spells, and heavy rain.' },
+          ].map((f) => (
+            <div key={f.title} className="glass-card p-6 text-center">
+              <h3 className="font-semibold text-white mb-1">{f.title}</h3>
+              <p className="text-agri-500 text-xs mb-3">{f.hindi}</p>
+              <p className="text-slate-400 text-sm">{f.desc}</p>
             </div>
           ))}
         </div>

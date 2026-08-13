@@ -1,18 +1,27 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createField } from '../api/fieldsApi';
+import { createField, getCropCatalog } from '../api/fieldsApi';
+import { cropLabel } from '../constants/crops';
 
-const CROPS = [
-  { value: 'rice', label: 'Rice / धान', emoji: '🌾' },
-  { value: 'wheat', label: 'Wheat / गेहूं', emoji: '🌿' },
-  { value: 'maize', label: 'Maize / मक्का', emoji: '🌽' },
-];
+// Shown as large buttons; the rest of the catalogue lives in the dropdown below.
+const QUICK_PICKS = ['rice', 'wheat', 'maize', 'cotton(lint)', 'sugarcane', 'potato'];
 
 export default function FieldNew() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [crops, setCrops] = useState([]);
+
+  useEffect(() => {
+    getCropCatalog()
+      .then((resp) => setCrops(resp.data.data.crops))
+      .catch(() => {
+        // Offline or server down: fall back to the quick picks so the form
+        // still works rather than presenting an empty crop list.
+        setCrops(QUICK_PICKS.map((value) => ({ value, label: cropLabel(value) })));
+      });
+  }, []);
 
   const [form, setForm] = useState({
     name: '', crop: '', variety: '',
@@ -81,14 +90,30 @@ export default function FieldNew() {
           <div>
             <label className="block text-sm text-slate-300 mb-3">फसल / Crop</label>
             <div className="grid grid-cols-3 gap-3">
-              {CROPS.map((c) => (
-                <button key={c.value} type="button" onClick={() => update('crop', c.value)}
-                  className={`p-4 rounded-xl border flex flex-col items-center gap-2 transition-all ${form.crop === c.value ? 'border-agri-500 bg-agri-900/40 text-agri-400' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
-                  <span className="text-3xl">{c.emoji}</span>
-                  <span className="text-xs font-medium">{c.label}</span>
+              {QUICK_PICKS.map((value) => (
+                <button key={value} type="button" onClick={() => update('crop', value)}
+                  className={`p-4 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${form.crop === value ? 'border-agri-500 bg-agri-900/40 text-agri-400' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
+                  <span className="text-xs font-medium">{cropLabel(value)}</span>
                 </button>
               ))}
             </div>
+            <label htmlFor="crop-select" className="block text-sm text-slate-300 mt-4 mb-1">
+              या कोई और फसल चुनें / Or choose another crop
+              {crops.length > 0 && <span className="text-slate-500"> ({crops.length} available)</span>}
+            </label>
+            <select
+              id="crop-select"
+              value={QUICK_PICKS.includes(form.crop) ? '' : form.crop}
+              onChange={(e) => update('crop', e.target.value)}
+              className={inputClass}
+            >
+              <option value="">— select —</option>
+              {crops.map((c) => (
+                <option key={c.value} value={c.value} className="bg-slate-900">
+                  {cropLabel(c.value)}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -138,7 +163,7 @@ export default function FieldNew() {
               <input id="loc-lon" type="number" step="0.0001" value={form.location.lon} onChange={(e) => updateLoc('lon', e.target.value)} placeholder="81.2045" className={inputClass} />
             </div>
           </div>
-          <p className="text-xs text-slate-500">💡 Find lat/lon on Google Maps: right-click → What's here?</p>
+          <p className="text-xs text-slate-500">Find lat/lon on Google Maps: right-click → What's here?</p>
           <div className="flex gap-3">
             <button onClick={() => setStep(1)} className="flex-1 py-3 border border-white/10 text-slate-400 rounded-lg hover:bg-white/5 transition-colors">← Back</button>
             <button
@@ -181,7 +206,7 @@ export default function FieldNew() {
               disabled={loading}
               className="flex-1 py-3 bg-agri-600 hover:bg-agri-500 disabled:opacity-50 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
             >
-              {loading ? <><div className="spinner w-5 h-5" /> Creating & checking...</> : '🌾 Create Field'}
+              {loading ? <><div className="spinner w-5 h-5" /> Creating & checking...</> : 'Create Field'}
             </button>
           </div>
         </div>

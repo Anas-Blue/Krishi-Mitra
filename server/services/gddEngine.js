@@ -3,11 +3,40 @@
  * All calculations follow PRD §8 exactly.
  */
 
-const CROP_PARAMS = {
-  rice:  { base: 10, upper: 35, maturityGdd: 2400, waterNeedMm: 1100 },
-  wheat: { base: 5,  upper: 30, maturityGdd: 2100, waterNeedMm: 450  },
-  maize: { base: 10, upper: 35, maturityGdd: 1700, waterNeedMm: 550  },
-};
+// Agronomic constants for every crop the yield model knows, generated from
+// ai-service/crop_meta.py via `python export_crop_params.py`. Loading it rather
+// than hardcoding keeps the GDD thresholds and the model's stress thresholds
+// from drifting apart.
+const cropParamsData = require('../data/cropParams.json');
+
+const CROP_PARAMS = cropParamsData.crops;
+const FAMILY_DEFAULTS = cropParamsData.familyDefaults;
+const CROP_ALIASES = cropParamsData.aliases;
+
+// Keyword -> family, mirroring crop_meta.get_spec, for crops outside the table.
+const FAMILY_KEYWORDS = [
+  ['pulse', 'pulse'], ['gram', 'pulse'], ['bean', 'pulse'], ['dal', 'pulse'],
+  ['millet', 'millet'], ['seed', 'oilseed'], ['oil', 'oilseed'],
+  ['nut', 'plantation'], ['fruit', 'plantation'],
+  ['chilli', 'spice'], ['spice', 'spice'], ['cotton', 'fibre'],
+  ['cane', 'sugar'], ['potato', 'tuber'],
+];
+
+function canonicalCrop(crop) {
+  const key = String(crop || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  if (CROP_PARAMS[key]) return key;
+  if (CROP_ALIASES[key]) return CROP_ALIASES[key];
+
+  const squashed = key.replace(/[\s\-_]/g, '');
+  const match = Object.keys(CROP_PARAMS).find(
+    (c) => c.replace(/[\s\-_]/g, '') === squashed
+  );
+  if (match) return match;
+  const aliasMatch = Object.keys(CROP_ALIASES).find(
+    (a) => a.replace(/[\s\-_]/g, '') === squashed
+  );
+  return aliasMatch ? CROP_ALIASES[aliasMatch] : key;
+}
 
 // Stage thresholds based on GDD % progress (PRD §8)
 const STAGE_THRESHOLDS = [
@@ -18,10 +47,23 @@ const STAGE_THRESHOLDS = [
   { max: 1.00, stage: 'mature'      },
 ];
 
+/**
+ * Resolve GDD parameters for any crop.
+ *
+ * Never throws. This used to reject anything but rice/wheat/maize, which failed
+ * the whole field check before the yield model was ever consulted — a farmer
+ * growing cotton got an error, not a degraded answer. Unknown crops now resolve
+ * through the alias map, then a family guess, and are flagged via `resolved`
+ * and `family` so callers can tell an exact match from an approximation.
+ */
 function getCropParams(crop) {
-  const params = CROP_PARAMS[crop.toLowerCase()];
-  if (!params) throw new Error(`Unknown crop: ${crop}`);
-  return params;
+  const key = canonicalCrop(crop);
+  const exact = CROP_PARAMS[key];
+  if (exact) return { ...exact, crop: key, resolved: 'exact' };
+
+  const hit = FAMILY_KEYWORDS.find(([keyword]) => key.includes(keyword));
+  const family = hit ? hit[1] : 'other';
+  return { ...FAMILY_DEFAULTS[family], crop: key, family, resolved: 'family_default' };
 }
 
 /**
@@ -117,8 +159,30 @@ function parseForecastDays(forecast) {
   }));
 }
 
+/**
+ * Derive the growing season from the sowing month, for the yield model.
+ * Indian cropping calendar: Kharif is monsoon-sown (Jun-Sep), Rabi is
+ * winter-sown (Oct-Dec), Summer/Zaid covers the Jan-May short season.
+ * Perennials are always "Whole Year" regardless of when they were recorded.
+ */
+function deriveSeason(sowingDate, crop) {
+  const params = getCropParams(crop);
+  if (params.perennial) return 'Whole Year';
+
+  const date = sowingDate instanceof Date ? sowingDate : new Date(sowingDate);
+  if (Number.isNaN(date.getTime())) return 'Kharif';
+
+  const month = date.getMonth() + 1; // 1-12
+  if (month >= 6 && month <= 9) return 'Kharif';
+  if (month >= 10 && month <= 12) return 'Rabi';
+  if (month >= 1 && month <= 2) return 'Rabi';
+  return 'Summer'; // Mar-May
+}
+
 module.exports = {
   getCropParams,
+  canonicalCrop,
+  deriveSeason,
   computeDailyGdd,
   accumulateGdd,
   computeStage,
@@ -126,4 +190,5 @@ module.exports = {
   parseHistoricalDays,
   parseForecastDays,
   CROP_PARAMS,
+  FAMILY_DEFAULTS,
 };

@@ -27,23 +27,11 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
-      <div className="glass-card max-w-4xl w-full overflow-hidden grid md:grid-cols-2 border border-agri-500/30 shadow-2xl fade-in">
-        {/* Left Side: Farmer Image Banner */}
-        <div className="relative hidden md:block">
-          <img
-            src={farmerHero}
-            alt="Smiling Indian Farmer in crop field"
-            className="w-full h-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
-          <div className="absolute bottom-8 left-8 right-8 z-10">
-            <div className="text-3xl mb-2">🌾</div>
-            <h2 className="text-2xl font-bold text-white font-sans mb-2">KrishiMitra</h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
-              Real-time heat degree (GDD) tracking, weather intelligence & verified crop advisory.
-            </p>
-          </div>
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="glass-card p-8 w-full max-w-md fade-in">
+        <div className="text-center mb-8">
+          <h1 className="text-2xl font-bold text-white font-outfit">KrishiMitra</h1>
+          <p className="text-slate-400 text-sm mt-1">लॉगिन करें / Sign In</p>
         </div>
 
         {/* Right Side: Form */}
@@ -95,15 +83,6 @@ export default function Login() {
               />
             </div>
 
-            <button
-              id="login-submit"
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-agri-600 hover:bg-agri-500 disabled:opacity-50 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 agri-glow"
-            >
-              {loading ? <><div className="spinner w-5 h-5" /> Logging in...</> : 'Login / लॉगिन'}
-            </button>
-          </form>
 
           <div className="mt-6 text-center text-xs text-slate-400 bg-white/5 p-2.5 rounded-lg">
             Demo Farmer Login: <code className="text-agri-400 font-mono">9999999999</code> / <code className="text-agri-400 font-mono">demo1234</code>

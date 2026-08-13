@@ -1,10 +1,19 @@
-fastapi==0.111.0
-uvicorn[standard]==0.29.1
-scikit-learn==1.4.2
-pandas==2.2.2
-joblib==1.4.2
-requests==2.31.0
-python-multipart==0.0.9
-Pillow==10.3.0
-numpy==1.26.4
-python-dotenv==1.0.1
+# Pinned to the exact versions yield_model.pkl was trained with.
+# joblib pickles embed scikit-learn's internal tree layout, so a version skew
+# between training and serving either warns loudly or fails to unpickle.
+# If you bump scikit-learn or numpy here, re-run `python train_model.py` and
+# commit the regenerated pkl in the same change.
+fastapi==0.141.1
+uvicorn[standard]==0.52.2
+scikit-learn==1.9.0
+numpy==2.5.2
+pandas==3.0.5
+joblib==1.5.3
+scipy==1.18.0
+requests==2.34.2
+python-multipart==0.0.32
+Pillow==12.3.0
+python-dotenv==1.2.2
+
+# dev / CI
+pytest==9.1.1
