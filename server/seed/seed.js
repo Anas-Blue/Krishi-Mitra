@@ -4,6 +4,10 @@
  * Run: node seed/seed.js
  */
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
+const dns = require('dns');
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4']);
+} catch (_) {}
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
@@ -103,6 +107,7 @@ async function seed() {
   console.log('\nSeed complete!');
   console.log('Demo farmer → phone: 9999999999  password: demo1234');
   console.log('Demo admin  → phone: 8888888888  password: admin1234');
+  process.exit(0);
 }
 
 seed().catch((err) => {

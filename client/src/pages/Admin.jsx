@@ -45,7 +45,7 @@ export default function Admin() {
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white font-outfit">Admin Dashboard</h1>
+          <h1 className="text-3xl font-bold text-white font-sans">Admin Dashboard</h1>
           <p className="text-slate-400 text-sm mt-1">KVK/Government Officer View</p>
         </div>
         <div className="flex items-center gap-3">

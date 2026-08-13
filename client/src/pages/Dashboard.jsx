@@ -5,6 +5,7 @@ import { getFields } from '../api/fieldsApi';
 import { getEvents } from '../api/eventsApi';
 import FieldCard from '../components/FieldCard';
 import AlertCard from '../components/AlertCard';
+import farmerHero from '../assets/farmer_hero.jpg';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -30,26 +31,46 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 fade-in">
-      {/* Header */}
-      <div className="flex items-start justify-between mb-8 flex-wrap gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-white font-outfit">
-            नमस्ते, {user.name.split(' ')[0]} 👋
-          </h1>
-          <p className="text-slate-400 mt-1">Here's your farm overview / आपका खेत सारांश</p>
-        </div>
-        <div className="flex items-center gap-3">
-          {unread > 0 && (
-            <Link to="/alerts" className="flex items-center gap-2 bg-red-900/40 border border-red-800/60 text-red-300 px-4 py-2 rounded-xl text-sm font-medium hover:bg-red-900/60 transition-colors">
-              🔔 {unread} unread alert{unread !== 1 ? 's' : ''}
-            </Link>
-          )}
-          <Link
-            to="/fields/new"
-            className="flex items-center gap-2 bg-agri-600 hover:bg-agri-500 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-colors agri-glow"
-          >
-            + नया खेत / Add Field
-          </Link>
+      {/* Welcome Banner with Farmer Photo */}
+      <div className="relative rounded-2xl overflow-hidden glass-card p-6 md:p-8 mb-8 border border-agri-500/30 bg-gradient-to-r from-slate-900/90 via-slate-900/70 to-slate-950/90">
+        <div className="grid md:grid-cols-12 gap-6 items-center">
+          <div className="md:col-span-8 z-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-agri-900/80 border border-agri-600/40 text-agri-300 text-xs font-semibold mb-3">
+              <span>🌾</span> KrishiMitra Farmer Portal
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-white font-sans mb-2">
+              नमस्ते, {user.name.split(' ')[0]} 👋
+            </h1>
+            <p className="text-slate-300 text-sm md:text-base max-w-xl">
+              Welcome back to your crop dashboard! Your registered fields are being tracked with GDD heat units, Open-Meteo weather intelligence, and verified advisory checks.
+            </p>
+            <div className="flex flex-wrap items-center gap-3 mt-6">
+              <Link
+                to="/fields/new"
+                className="flex items-center gap-2 bg-agri-600 hover:bg-agri-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold transition-all agri-glow"
+              >
+                + नया खेत / Add Field
+              </Link>
+              {unread > 0 && (
+                <Link to="/alerts" className="flex items-center gap-2 bg-red-900/50 border border-red-700 text-red-200 px-4 py-2.5 rounded-xl text-sm font-medium hover:bg-red-900/70 transition-colors">
+                  🔔 {unread} unread alert{unread !== 1 ? 's' : ''}
+                </Link>
+              )}
+            </div>
+          </div>
+          <div className="md:col-span-4 hidden md:block relative">
+            <div className="relative rounded-xl overflow-hidden border border-white/10 shadow-xl h-40">
+              <img
+                src={farmerHero}
+                alt="Farmer in green crop field"
+                className="w-full h-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent" />
+              <div className="absolute bottom-2 left-3 right-3 text-xs text-slate-200 font-medium truncate">
+                🌱 Active Crop Monitoring
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

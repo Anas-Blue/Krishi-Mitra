@@ -27,7 +27,7 @@ export default function AdminFields() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 fade-in">
       <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
-        <h1 className="text-2xl font-bold text-white font-outfit">All Fields ({fields.length})</h1>
+        <h1 className="text-2xl font-bold text-white font-sans">All Fields ({fields.length})</h1>
         <input
           type="text" value={search} onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by name, district, crop..."
