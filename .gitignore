@@ -29,3 +29,7 @@ Thumbs.db
 
 # Railway
 .railway/
+api-keys.txt
+server/.env
+ai-service/.env
+client/.env
