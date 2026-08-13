@@ -55,7 +55,7 @@ export default function Admin() {
             disabled={running}
             className="px-4 py-2 bg-agri-700 hover:bg-agri-600 disabled:opacity-50 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2"
           >
-            {running ? <><div className="spinner w-4 h-4" /> Running...</> : '🔄 Run All Checks'}
+            {running ? <><div className="spinner w-4 h-4" /> Running...</> : 'Run All Checks'}
           </button>
         </div>
       </div>
@@ -63,13 +63,12 @@ export default function Admin() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Farmers', value: stats?.totalFarmers, icon: '👨‍🌾' },
-          { label: 'Total Fields', value: stats?.totalFields, icon: '🌿' },
-          { label: 'Active Fields', value: stats?.activeFields, icon: '✅' },
-          { label: 'High Alerts', value: stats?.highAlerts, icon: '🔴' },
+          { label: 'Total Farmers', value: stats?.totalFarmers },
+          { label: 'Total Fields', value: stats?.totalFields },
+          { label: 'Active Fields', value: stats?.activeFields },
+          { label: 'High Alerts', value: stats?.highAlerts },
         ].map((s) => (
           <div key={s.label} className="glass-card p-5">
-            <div className="text-3xl mb-2">{s.icon}</div>
             <div className="text-3xl font-bold text-white">{s.value ?? '—'}</div>
             <div className="text-slate-400 text-sm mt-1">{s.label}</div>
           </div>
@@ -79,7 +78,7 @@ export default function Admin() {
       <div className="grid lg:grid-cols-2 gap-6 mb-8">
         {/* Crop distribution */}
         <div className="glass-card p-5">
-          <h3 className="font-semibold text-white mb-4">🌾 Crop Distribution</h3>
+          <h3 className="font-semibold text-white mb-4">Crop Distribution</h3>
           {cropDist.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
@@ -94,7 +93,7 @@ export default function Admin() {
 
         {/* State yield */}
         <div className="glass-card p-5">
-          <h3 className="font-semibold text-white mb-4">📊 Average Yield by State (t/ha)</h3>
+          <h3 className="font-semibold text-white mb-4">Average Yield by State (t/ha)</h3>
           {yieldMap.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={yieldMap.slice(0, 8)} layout="vertical">
@@ -110,14 +109,13 @@ export default function Admin() {
 
       {/* High severity alerts */}
       <div className="glass-card p-5">
-        <h3 className="font-semibold text-white mb-4">🔴 High-Severity Alerts ({alerts.length})</h3>
+        <h3 className="font-semibold text-white mb-4">High-Severity Alerts ({alerts.length})</h3>
         {alerts.length === 0 ? (
           <p className="text-slate-500 text-sm text-center py-8">No high-severity alerts</p>
         ) : (
           <div className="space-y-3 max-h-96 overflow-y-auto">
             {alerts.slice(0, 20).map((alert) => (
               <div key={alert._id} className="flex items-start gap-3 py-3 border-b border-white/5">
-                <span className="text-xl">⚠️</span>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-medium text-white text-sm">{alert.title}</span>

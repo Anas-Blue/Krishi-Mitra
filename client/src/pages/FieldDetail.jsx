@@ -9,8 +9,6 @@ import AdvisoryPanel from '../components/AdvisoryPanel';
 import AlertCard from '../components/AlertCard';
 import { CROP_PARAMS_MATURITY } from '../utils/cropConstants';
 
-const CROP_EMOJIS = { rice: '🌾', wheat: '🌿', maize: '🌽' };
-
 export default function FieldDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -91,7 +89,6 @@ export default function FieldDetail() {
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-4 mb-8">
         <div className="flex items-center gap-4">
-          <span className="text-4xl">{CROP_EMOJIS[field.crop] || '🌱'}</span>
           <div>
             <h1 className="text-2xl font-bold text-white font-outfit">{field.name}</h1>
             <p className="text-slate-400 text-sm">{field.location.district}, {field.location.state} • {field.areaAcre} acres • <span className="capitalize">{field.crop}</span></p>
@@ -104,7 +101,7 @@ export default function FieldDetail() {
             disabled={checking || field.status !== 'active'}
             className="px-4 py-2 bg-agri-700 hover:bg-agri-600 disabled:opacity-40 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
           >
-            {checking ? <><div className="spinner w-4 h-4" /> Checking...</> : '🔄 Run Check / जाँच करें'}
+            {checking ? <><div className="spinner w-4 h-4" /> Checking...</> : 'Run Check / जाँच करें'}
           </button>
           {field.status === 'active' && (
             <button
@@ -112,7 +109,7 @@ export default function FieldDetail() {
               disabled={harvesting}
               className="px-4 py-2 bg-earth-600 hover:bg-earth-500 disabled:opacity-40 text-white rounded-lg text-sm font-medium transition-colors"
             >
-              🌾 Mark Harvested
+              Mark Harvested
             </button>
           )}
         </div>
@@ -128,7 +125,7 @@ export default function FieldDetail() {
           {/* Key stats */}
           <div className="grid grid-cols-2 gap-4">
             <div className="glass-card p-4">
-              <p className="text-slate-400 text-xs mb-1">🗓️ Harvest Estimate / कटाई अनुमान</p>
+              <p className="text-slate-400 text-xs mb-1">Harvest Estimate / कटाई अनुमान</p>
               <p className="text-white font-semibold">
                 {c.predictedHarvestDate
                   ? new Date(c.predictedHarvestDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -136,20 +133,20 @@ export default function FieldDetail() {
               </p>
             </div>
             <div className="glass-card p-4">
-              <p className="text-slate-400 text-xs mb-1">📊 Yield Estimate / उपज अनुमान</p>
+              <p className="text-slate-400 text-xs mb-1">Yield Estimate / उपज अनुमान</p>
               <p className="text-white font-semibold">{c.yieldEstimate?.toFixed(2) || '—'} t/ha</p>
               {c.yieldRangeLow && c.yieldRangeHigh && (
                 <p className="text-slate-500 text-xs">{c.yieldRangeLow.toFixed(1)} – {c.yieldRangeHigh.toFixed(1)} t/ha</p>
               )}
             </div>
             <div className="glass-card p-4">
-              <p className="text-slate-400 text-xs mb-1">⚡ Stress Factor</p>
+              <p className="text-slate-400 text-xs mb-1">Stress Factor</p>
               <p className={`font-semibold ${(c.stressFactor || 1) < 0.8 ? 'text-red-400' : 'text-agri-400'}`}>
                 {c.stressFactor?.toFixed(3) || '—'}
               </p>
             </div>
             <div className="glass-card p-4">
-              <p className="text-slate-400 text-xs mb-1">🕐 Last Checked</p>
+              <p className="text-slate-400 text-xs mb-1">Last Checked</p>
               <p className="text-white text-sm">{c.lastCheckedAt ? new Date(c.lastCheckedAt).toLocaleString('en-IN') : '—'}</p>
             </div>
           </div>
@@ -164,7 +161,7 @@ export default function FieldDetail() {
 
           {/* Event timeline */}
           <div className="glass-card p-4">
-            <h3 className="text-sm font-semibold text-white mb-3">📋 Event Timeline</h3>
+            <h3 className="text-sm font-semibold text-white mb-3">Event Timeline</h3>
             {events.length === 0 ? (
               <p className="text-slate-500 text-xs text-center py-4">No events yet. Run a check.</p>
             ) : (
@@ -185,7 +182,7 @@ export default function FieldDetail() {
           {/* Soil info */}
           {field.soil && (Object.values(field.soil).some(Boolean)) && (
             <div className="glass-card p-4">
-              <h3 className="text-sm font-semibold text-white mb-3">🧪 Soil / मिट्टी</h3>
+              <h3 className="text-sm font-semibold text-white mb-3">Soil / मिट्टी</h3>
               <div className="space-y-1 text-xs">
                 {field.soil.nitrogen && <div className="flex justify-between"><span className="text-slate-400">N</span><span className="text-white">{field.soil.nitrogen} kg/ha</span></div>}
                 {field.soil.phosphorus && <div className="flex justify-between"><span className="text-slate-400">P</span><span className="text-white">{field.soil.phosphorus} kg/ha</span></div>}

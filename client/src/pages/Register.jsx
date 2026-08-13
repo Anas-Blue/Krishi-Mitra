@@ -36,7 +36,6 @@ export default function Register() {
     <div className="min-h-screen flex items-center justify-center px-4 py-8">
       <div className="glass-card p-8 w-full max-w-md fade-in">
         <div className="text-center mb-6">
-          <div className="text-4xl mb-2">🌾</div>
           <h1 className="text-2xl font-bold text-white font-outfit">Register / पंजीकरण</h1>
           <p className="text-slate-400 text-sm mt-1">Create your farmer account</p>
         </div>
@@ -78,7 +77,7 @@ export default function Register() {
           <div>
             <label className="block text-sm text-slate-300 mb-1">भाषा / Language</label>
             <div className="flex gap-3">
-              {[['en', '🇬🇧 English'], ['hi', '🇮🇳 हिन्दी']].map(([val, label]) => (
+              {[['en', 'English'], ['hi', 'हिन्दी']].map(([val, label]) => (
                 <label key={val} className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border cursor-pointer transition-colors ${form.language === val ? 'border-agri-500 bg-agri-900/40 text-agri-400' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
                   <input type="radio" name="language" value={val} checked={form.language === val} onChange={handleChange} className="hidden" />
                   {label}

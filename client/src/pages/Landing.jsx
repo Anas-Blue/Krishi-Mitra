@@ -9,7 +9,6 @@ export default function Landing() {
       {/* Hero */}
       <section className="flex-1 flex flex-col items-center justify-center text-center px-4 py-20">
         <div className="fade-in max-w-3xl">
-          <div className="text-7xl mb-6">🌾</div>
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 leading-tight font-outfit">
             <span className="text-agri-400">Krishi</span>Mitra
           </h1>
@@ -54,12 +53,11 @@ export default function Landing() {
       <section className="px-4 py-16 max-w-5xl mx-auto w-full">
         <div className="grid md:grid-cols-3 gap-6">
           {[
-            { icon: '📊', title: 'GDD-based Tracking', hindi: 'GDD आधारित ट्रैकिंग', desc: 'Growing Degree Days replaces calendar dates for accurate crop stage prediction.' },
-            { icon: '🤖', title: 'Adversarial AI', hindi: 'प्रतिकूल AI', desc: 'DeepSeek Challenger audits every recommendation. Deterministic code verifies and decides.' },
-            { icon: '🌧️', title: 'Weather Intelligence', hindi: 'मौसम बुद्धिमत्ता', desc: '16-day forecast from Open-Meteo. Auto-detect heat stress, dry spells, and heavy rain.' },
+            { title: 'GDD-based Tracking', hindi: 'GDD आधारित ट्रैकिंग', desc: 'Growing Degree Days replaces calendar dates for accurate crop stage prediction.' },
+            { title: 'Adversarial AI', hindi: 'प्रतिकूल AI', desc: 'DeepSeek Challenger audits every recommendation. Deterministic code verifies and decides.' },
+            { title: 'Weather Intelligence', hindi: 'मौसम बुद्धिमत्ता', desc: '16-day forecast from Open-Meteo. Auto-detect heat stress, dry spells, and heavy rain.' },
           ].map((f) => (
             <div key={f.title} className="glass-card p-6 text-center">
-              <div className="text-4xl mb-4">{f.icon}</div>
               <h3 className="font-semibold text-white mb-1">{f.title}</h3>
               <p className="text-agri-500 text-xs mb-3">{f.hindi}</p>
               <p className="text-slate-400 text-sm">{f.desc}</p>

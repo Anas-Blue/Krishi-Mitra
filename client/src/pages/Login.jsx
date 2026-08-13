@@ -29,7 +29,6 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="glass-card p-8 w-full max-w-md fade-in">
         <div className="text-center mb-8">
-          <div className="text-5xl mb-3">🌾</div>
           <h1 className="text-2xl font-bold text-white font-outfit">KrishiMitra</h1>
           <p className="text-slate-400 text-sm mt-1">लॉगिन करें / Sign In</p>
         </div>

@@ -42,7 +42,6 @@ export default function NavBar() {
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo */}
         <Link to={user ? (isAdmin ? '/admin' : '/dashboard') : '/'} className="flex items-center gap-2">
-          <span className="text-2xl">🌾</span>
           <span className="font-bold text-agri-400 text-lg font-outfit">KrishiMitra</span>
         </Link>
 

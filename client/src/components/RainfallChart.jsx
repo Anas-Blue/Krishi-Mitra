@@ -17,7 +17,7 @@ export default function RainfallChart({ forecastDays }) {
   if (!forecastDays || forecastDays.length === 0) {
     return (
       <div className="glass-card p-4 text-center text-slate-500 text-sm py-8">
-        <p>🌧️ Rainfall forecast will load after first field check</p>
+        <p>Rainfall forecast will load after first field check</p>
         <p className="text-xs mt-1">वर्षा पूर्वानुमान — पहली जाँच के बाद</p>
       </div>
     );
@@ -31,7 +31,7 @@ export default function RainfallChart({ forecastDays }) {
 
   return (
     <div className="glass-card p-4">
-      <h3 className="text-sm font-semibold text-white mb-4">🌧️ 16-Day Rainfall Forecast / वर्षा पूर्वानुमान</h3>
+      <h3 className="text-sm font-semibold text-white mb-4">16-Day Rainfall Forecast / वर्षा पूर्वानुमान</h3>
       <ResponsiveContainer width="100%" height={200}>
         <BarChart data={data} barSize={12}>
           <XAxis dataKey="date" stroke="#475569" tick={{ fill: '#94a3b8', fontSize: 10 }} interval={2} />
