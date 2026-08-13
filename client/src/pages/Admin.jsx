@@ -93,7 +93,8 @@ export default function Admin() {
 
         {/* State yield */}
         <div className="glass-card p-5">
-          <h3 className="font-semibold text-white mb-4">Average Yield by State (t/ha)</h3>
+          <h3 className="font-semibold text-white mb-1">Average Yield by State (t/ha)</h3>
+          <p className="text-slate-500 text-xs mb-3">Tonnes/ha crops only — coconut and other units excluded</p>
           {yieldMap.length > 0 ? (
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={yieldMap.slice(0, 8)} layout="vertical">

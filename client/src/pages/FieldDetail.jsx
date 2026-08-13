@@ -9,6 +9,7 @@ import AdvisoryPanel from '../components/AdvisoryPanel';
 import AlertCard from '../components/AlertCard';
 import { CROP_PARAMS_MATURITY } from '../utils/cropConstants';
 
+
 export default function FieldDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -82,7 +83,22 @@ export default function FieldDetail() {
   if (!field) return <div className="text-center text-slate-400 py-20">Field not found</div>;
 
   const c = field.current;
-  const maturityGdd = CROP_PARAMS_MATURITY[field.crop] || 2000;
+  // Recover the crop's maturity target from the server's own numbers so the
+  // client never has to keep its own per-crop table in sync. The static map is
+  // only a fallback for a field that has not been checked yet.
+  const maturityGdd = c?.gddPct > 0
+    ? Math.round(c.cumGdd / c.gddPct)
+    : (CROP_PARAMS_MATURITY[field.crop] || 2000);
+
+  const yieldUnit = c?.yieldUnit || 't/ha';
+  const yieldDecimals = yieldUnit === 'nuts/ha' ? 0 : 2;
+  const CONFIDENCE_LABEL = {
+    high: null, // a confident prediction needs no caveat
+    medium: 'approximate — limited local data',
+    low: 'rough estimate — no data for this crop in your state',
+    very_low: 'very rough — crop not in the training data',
+  };
+  const confidenceNote = CONFIDENCE_LABEL[c?.yieldConfidence];
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 fade-in">
@@ -134,9 +150,17 @@ export default function FieldDetail() {
             </div>
             <div className="glass-card p-4">
               <p className="text-slate-400 text-xs mb-1">Yield Estimate / उपज अनुमान</p>
-              <p className="text-white font-semibold">{c.yieldEstimate?.toFixed(2) || '—'} t/ha</p>
+              <p className="text-white font-semibold">
+                {c.yieldEstimate?.toFixed(yieldDecimals) || '—'} {yieldUnit}
+              </p>
               {c.yieldRangeLow && c.yieldRangeHigh && (
-                <p className="text-slate-500 text-xs">{c.yieldRangeLow.toFixed(1)} – {c.yieldRangeHigh.toFixed(1)} t/ha</p>
+                <p className="text-slate-500 text-xs">
+                  {c.yieldRangeLow.toFixed(yieldDecimals)} – {c.yieldRangeHigh.toFixed(yieldDecimals)} {yieldUnit}
+                  <span className="ml-1 opacity-70">(80% likely range)</span>
+                </p>
+              )}
+              {confidenceNote && (
+                <p className="text-amber-400/80 text-xs mt-1">⚠ {confidenceNote}</p>
               )}
             </div>
             <div className="glass-card p-4">
@@ -151,7 +175,7 @@ export default function FieldDetail() {
             </div>
           </div>
 
-          <YieldChart history={field.yieldHistory} />
+          <YieldChart history={field.yieldHistory} unit={yieldUnit} />
           <RainfallChart forecastDays={forecastDays} />
         </div>
 

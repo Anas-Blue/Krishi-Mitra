@@ -22,10 +22,20 @@ router.get(
       Event.countDocuments({ severity: 'high', read: false }),
     ]);
 
-    // Average yield across all fields with an estimate
+    // Average yield across fields measured in tonnes/ha. Crops recorded in
+    // other units (coconut is nuts/ha) are excluded rather than averaged in,
+    // which would swamp the mean by three orders of magnitude.
     const yieldAgg = await Field.aggregate([
-      { $match: { 'current.yieldEstimate': { $exists: true, $ne: null } } },
-      { $group: { _id: null, avgYield: { $avg: '$current.yieldEstimate' } } },
+      {
+        $match: {
+          'current.yieldEstimate': { $exists: true, $ne: null },
+          $or: [
+            { 'current.yieldUnit': 't/ha' },
+            { 'current.yieldUnit': { $exists: false } },
+          ],
+        },
+      },
+      { $group: { _id: null, avgYield: { $avg: '$current.yieldEstimate' }, count: { $sum: 1 } } },
     ]);
     const avgYield = yieldAgg[0]?.avgYield || 0;
 
@@ -40,6 +50,8 @@ router.get(
       activeFields,
       highAlerts,
       avgYield: Math.round(avgYield * 100) / 100,
+      avgYieldUnit: 't/ha',
+      avgYieldFieldCount: yieldAgg[0]?.count || 0,
       cropDistribution: cropDist,
     });
   })
@@ -89,8 +101,17 @@ router.get(
 router.get(
   '/yield-map',
   asyncHandler(async (req, res) => {
+    // Restricted to tonnes/ha crops so the bars are comparable across states.
     const yieldByState = await Field.aggregate([
-      { $match: { 'current.yieldEstimate': { $exists: true, $ne: null } } },
+      {
+        $match: {
+          'current.yieldEstimate': { $exists: true, $ne: null },
+          $or: [
+            { 'current.yieldUnit': 't/ha' },
+            { 'current.yieldUnit': { $exists: false } },
+          ],
+        },
+      },
       {
         $group: {
           _id: '$location.state',

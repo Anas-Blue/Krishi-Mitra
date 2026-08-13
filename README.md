@@ -4,10 +4,32 @@ AI-powered crop yield prediction and optimization system for **Smart India Hacka
 
 ## What it does
 - Monitors fields from sowing to harvest using **Growing Degree Days (GDD)**
-- Predicts yield using a Random Forest model trained on 1997–2020 Indian crop data
+- Predicts yield for **55 crops across 30 Indian states** (1997–2020 data)
 - Runs an adversarial **DeepSeek Challenger** to audit every recommendation
 - Deterministic **Safety Policy + Validator** makes the final decision — not the LLM
 - Bilingual (English + Hindi) farmer and admin dashboard
+
+## Yield model accuracy
+
+Measured on a **temporal holdout** — trained on 1997–2016, scored on 2017–2020,
+which the model never saw. A random train/test split would score better here and
+mean less, because the same crop-state-year cluster would land in both halves.
+
+| Metric | Value |
+|---|---|
+| Median absolute error | **12.9%** |
+| Predictions within ±20% | 65.4% |
+| R² (log yield) | 0.951 |
+| Prediction interval | 80% coverage, empirically calibrated |
+
+Live at `GET /model-info` on the AI service, so the claim is traceable rather
+than folklore. Every prediction carries a `confidence` field; anything below
+`high` means it came from a fallback and is labelled as such in the UI.
+
+Model: ExtraTrees regression on log-yield, over crop/season/state, rainfall,
+per-hectare fertiliser and pesticide intensity, and a crop/state/season
+agronomic prior. See `ai-service/train_model.py` for why each choice was made
+and `ai-service/data/README.md` for the dataset's known limitations.
 
 ## Architecture
 
@@ -31,7 +53,7 @@ React (client/)  →  Node/Express (server/)  →  MongoDB Atlas
 
 - **Frontend**: React 18, Vite, React Router, Axios, TailwindCSS, Recharts
 - **Backend**: Node.js 20, Express 4, Mongoose 8, JWT, bcrypt, Multer
-- **AI Service**: Python 3.11, FastAPI, scikit-learn, pandas, joblib
+- **AI Service**: Python 3.13, FastAPI, scikit-learn, pandas, joblib
 - **Database**: MongoDB Atlas
 - **LLM**: DeepSeek (chat + vision)
 - **External**: Open-Meteo, Tavily

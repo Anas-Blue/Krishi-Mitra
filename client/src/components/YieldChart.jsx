@@ -1,18 +1,20 @@
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
-const CustomTooltip = ({ active, payload, label }) => {
+// `unit` is the field's own yield unit — not every crop is tonnes/ha.
+const CustomTooltip = ({ active, payload, label, unit = 't/ha' }) => {
   if (active && payload?.length) {
+    const decimals = unit === 'nuts/ha' ? 0 : 2;
     return (
       <div className="glass-card p-3 text-sm">
         <p className="text-slate-400 text-xs">{label}</p>
-        <p className="text-agri-400 font-semibold">{payload[0]?.value?.toFixed(2)} t/ha</p>
+        <p className="text-agri-400 font-semibold">{payload[0]?.value?.toFixed(decimals)} {unit}</p>
       </div>
     );
   }
   return null;
 };
 
-export default function YieldChart({ history }) {
+export default function YieldChart({ history, unit = 't/ha' }) {
   if (!history || history.length < 2) {
     return (
       <div className="glass-card p-4 text-center text-slate-500 text-sm py-8">
@@ -35,8 +37,8 @@ export default function YieldChart({ history }) {
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={data}>
           <XAxis dataKey="date" stroke="#475569" tick={{ fill: '#94a3b8', fontSize: 11 }} />
-          <YAxis stroke="#475569" tick={{ fill: '#94a3b8', fontSize: 11 }} unit=" t/ha" width={60} />
-          <Tooltip content={<CustomTooltip />} />
+          <YAxis stroke="#475569" tick={{ fill: '#94a3b8', fontSize: 11 }} unit={` ${unit}`} width={60} />
+          <Tooltip content={<CustomTooltip unit={unit} />} />
           <ReferenceLine y={avg} stroke="#4ade8060" strokeDasharray="4 4" label={{ value: 'avg', fill: '#4ade80', fontSize: 10 }} />
           <Line
             type="monotone"
