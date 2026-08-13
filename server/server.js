@@ -1,4 +1,9 @@
 require('dotenv').config();
+const dns = require('dns');
+try {
+  dns.setServers(['8.8.8.8', '8.8.4.4']);
+} catch (_) {}
+
 const mongoose = require('mongoose');
 const createApp = require('./app');
 const { startScheduler } = require('./services/schedulerService');
@@ -13,19 +18,18 @@ if (!MONGO_URI) {
 
 async function start() {
   try {
-    await mongoose.connect(MONGO_URI);
+    await mongoose.connect(MONGO_URI, { serverSelectionTimeoutMS: 5000 });
     console.log('[db] Connected to MongoDB Atlas');
-
-    const app = createApp();
-    app.listen(PORT, () => {
-      console.log(`[server] Running on port ${PORT}`);
-    });
-
     startScheduler();
   } catch (err) {
-    console.error('[startup] Fatal error:', err.message);
-    process.exit(1);
+    console.warn('[db] Could not connect to MongoDB Atlas (', err.message, '). Server starting in local fallback mode.');
   }
+
+  const app = createApp();
+  app.listen(PORT, () => {
+    console.log(`[server] Running on port ${PORT}`);
+  });
 }
 
 start();
+

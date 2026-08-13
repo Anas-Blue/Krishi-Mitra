@@ -68,7 +68,7 @@ export default function FieldNew() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white font-outfit">नया खेत जोड़ें / Add New Field</h1>
+        <h1 className="text-2xl font-bold text-white font-sans">नया खेत जोड़ें / Add New Field</h1>
         <div className="flex gap-2 mt-4">
           {['Crop', 'Location', 'Soil'].map((label, i) => (
             <div key={label} className={`flex-1 h-1.5 rounded-full transition-colors ${step > i ? 'bg-agri-500' : step === i + 1 ? 'bg-agri-700' : 'bg-white/10'}`} />

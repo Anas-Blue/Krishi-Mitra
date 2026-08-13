@@ -5,6 +5,7 @@ import { getFields } from '../api/fieldsApi';
 import { getEvents } from '../api/eventsApi';
 import FieldCard from '../components/FieldCard';
 import AlertCard from '../components/AlertCard';
+import farmerHero from '../assets/farmer_hero.jpg';
 
 export default function Dashboard() {
   const { user } = useAuth();

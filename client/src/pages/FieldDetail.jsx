@@ -106,7 +106,7 @@ export default function FieldDetail() {
       <div className="flex items-start justify-between flex-wrap gap-4 mb-8">
         <div className="flex items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white font-outfit">{field.name}</h1>
+            <h1 className="text-2xl font-bold text-white font-sans">{field.name}</h1>
             <p className="text-slate-400 text-sm">{field.location.district}, {field.location.state} • {field.areaAcre} acres • <span className="capitalize">{field.crop}</span></p>
             {field.variety && <p className="text-slate-500 text-xs">Variety: {field.variety}</p>}
           </div>
