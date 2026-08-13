@@ -1,0 +1,20 @@
+# railway.toml — monorepo configuration for Railway
+# Three services: krishi-server, krishi-ai, krishi-client
+# Each service uses its own Dockerfile in the respective subdirectory.
+#
+# USAGE:
+#   1. railway login
+#   2. railway link (select your project)
+#   3. Create three services in Railway dashboard, one per directory
+#   4. Set environment variables per service (see DEPLOY.md)
+#   5. railway up --service krishi-server
+#      railway up --service krishi-ai
+#      railway up --service krishi-client
+
+[build]
+builder = "dockerfile"
+
+# Note: Railway monorepo requires configuring services in the dashboard.
+# Each service's root path is set to the subdirectory containing its Dockerfile.
+# This file documents the intent; per-service overrides go in each service's
+# Railway dashboard settings under "Source → Root Directory".
