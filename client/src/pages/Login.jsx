@@ -85,9 +85,6 @@ export default function Login() {
           </button>
         </form>
 
-        <div className="mt-4 text-center text-sm text-slate-500">
-          Demo: <code className="text-agri-400">9999999999</code> / <code className="text-agri-400">demo1234</code>
-        </div>
 
         <p className="mt-6 text-center text-sm text-slate-500">
           New farmer?{' '}
