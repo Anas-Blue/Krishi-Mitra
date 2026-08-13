@@ -1,39 +1,47 @@
 """
-Pure stress-factor computation. No side effects, no I/O.
-All functions work on daily weather arrays.
+Weather-stress adjustment applied on top of the statistical yield baseline.
+Pure computation over daily weather arrays — no I/O, no model access.
+
+Scope and honesty: these are heuristic agronomic penalties, not fitted
+coefficients. The per-day and per-mm rates below are round numbers chosen to be
+directionally right and deliberately conservative; the composite is clamped so
+the layer can never dominate the statistical baseline. Thresholds come from
+crop_meta, so all 55 crops get crop-appropriate limits rather than rice's.
 """
 from __future__ import annotations
+
 from typing import TypedDict
+
+import crop_meta
 
 
 class StressBreakdown(TypedDict):
     heat_factor: float
     water_factor: float
     dry_spell_factor: float
-    stress_factor: float  # clamped composite
+    stress_factor: float
 
-
-CROP_UPPER_TEMPS = {"rice": 35.0, "wheat": 30.0, "maize": 35.0}
-CROP_WATER_NEEDS = {"rice": 1100.0, "wheat": 450.0, "maize": 550.0}
 
 _STRESS_MIN = 0.5
 _STRESS_MAX = 1.1
 
+# Reproductive window as a fraction of accumulated GDD. Heat during flowering
+# costs far more than the same heat during vegetative growth.
+_FLOWERING_START = 0.40
+_FLOWERING_END = 0.65
+
 
 def compute_heat_factor(tmax_series: list[float], crop: str, gdd_pct: float) -> float:
-    """
-    Reduce yield for each day above the crop's upper temperature threshold.
-    Extra penalty when heat hits during flowering (40–65% GDD progress).
-    """
-    upper = CROP_UPPER_TEMPS.get(crop.lower(), 35.0)
-    hot_days = sum(1 for t in tmax_series if t > upper)
+    """Yield reduction from days above the crop's upper temperature threshold."""
+    if not tmax_series:
+        return 0.0
+    upper = crop_meta.get_spec(crop)["upper_temp_c"]
+    hot_days = sum(1 for t in tmax_series if t is not None and t > upper)
 
     base_reduction = hot_days * 0.008  # 0.8% per hot day
 
-    # Flowering heat stress: additional 1% per day beyond 5 hot days
-    flowering_active = 0.40 <= gdd_pct <= 0.65
     extra = 0.0
-    if flowering_active and hot_days > 5:
+    if _FLOWERING_START <= gdd_pct <= _FLOWERING_END and hot_days > 5:
         extra = (hot_days - 5) * 0.010
 
     return max(0.0, base_reduction + extra)
@@ -41,38 +49,53 @@ def compute_heat_factor(tmax_series: list[float], crop: str, gdd_pct: float) -> 
 
 def compute_water_factor(total_rainfall_mm: float, crop: str) -> float:
     """
-    Compare actual rainfall to crop water need.
-    Reduction scales linearly below 60% of need; bonus possible above need (capped).
+    Rainfall measured against the crop's seasonal requirement.
+
+    Negative return means a small bonus. Note this reads rainfall only: an
+    irrigated field will look water-stressed here, which is why the composite
+    is floored and why irrigation should eventually be an input.
     """
-    need = CROP_WATER_NEEDS.get(crop.lower(), 550.0)
-    ratio = total_rainfall_mm / need if need > 0 else 1.0
+    need = crop_meta.get_spec(crop)["water_need_mm"]
+    if need <= 0:
+        return 0.0
+    ratio = total_rainfall_mm / need
 
     if ratio >= 1.0:
-        return -min((ratio - 1.0) * 0.02, 0.05)  # slight bonus for surplus, max 5%
+        return -min((ratio - 1.0) * 0.02, 0.05)
     if ratio >= 0.6:
-        return (1.0 - ratio) * 0.20  # gentle linear reduction
-    return 0.20 + (0.6 - ratio) * 0.50  # steep below 60%
+        return (1.0 - ratio) * 0.20
+    return 0.20 + (0.6 - ratio) * 0.50
 
 
-def compute_dry_spell_factor(daily_rainfall: list[float]) -> float:
+def compute_dry_spell_factor(daily_rainfall: list[float], crop: str) -> float:
     """
-    Find the longest consecutive dry run (< 1mm/day).
-    Reduction starts after 14 days, increases after 21.
+    Longest consecutive run below 1 mm/day. Tolerance scales with the crop's
+    water need: millets shrug off three dry weeks that would hurt rice.
     """
-    max_run = 0
-    current_run = 0
+    if not daily_rainfall:
+        return 0.0
+
+    max_run = current_run = 0
     for rain in daily_rainfall:
-        if rain < 1.0:
+        if (rain or 0) < 1.0:
             current_run += 1
             max_run = max(max_run, current_run)
         else:
             current_run = 0
 
-    if max_run <= 14:
+    need = crop_meta.get_spec(crop)["water_need_mm"]
+    if need <= 400:        # drought-adapted: millets, moth, horse-gram
+        tolerance, severe = 21, 30
+    elif need >= 1000:     # thirsty: rice, sugarcane, banana, spices
+        tolerance, severe = 10, 16
+    else:
+        tolerance, severe = 14, 21
+
+    if max_run <= tolerance:
         return 0.0
-    if max_run <= 21:
-        return (max_run - 14) * 0.015  # 1.5% per day beyond 14
-    return 0.105 + (max_run - 21) * 0.025  # steeper after 21 days
+    if max_run <= severe:
+        return (max_run - tolerance) * 0.015
+    return (severe - tolerance) * 0.015 + (max_run - severe) * 0.025
 
 
 def apply_stress(
@@ -83,21 +106,17 @@ def apply_stress(
     total_rainfall_mm: float,
     daily_rainfall: list[float],
 ) -> StressBreakdown:
-    """
-    Compute composite stress factor and apply to baseline.
-    Stress factor is clamped to [0.5, 1.1].
-    """
-    heat_reduction = compute_heat_factor(tmax_series, crop, gdd_pct)
-    water_reduction = compute_water_factor(total_rainfall_mm, crop)
-    dry_reduction = compute_dry_spell_factor(daily_rainfall)
+    """Composite stress factor, clamped to [0.5, 1.1] and applied to the baseline."""
+    heat = compute_heat_factor(tmax_series, crop, gdd_pct)
+    water = compute_water_factor(total_rainfall_mm, crop)
+    dry = compute_dry_spell_factor(daily_rainfall, crop)
 
-    total_reduction = heat_reduction + water_reduction + dry_reduction
+    total_reduction = heat + water + dry
     stress_factor = max(_STRESS_MIN, min(_STRESS_MAX, 1.0 - total_reduction))
-    predicted_yield = baseline_yield * stress_factor
 
     return StressBreakdown(
-        heat_factor=round(heat_reduction, 4),
-        water_factor=round(water_reduction, 4),
-        dry_spell_factor=round(dry_reduction, 4),
+        heat_factor=round(heat, 4),
+        water_factor=round(water, 4),
+        dry_spell_factor=round(dry, 4),
         stress_factor=round(stress_factor, 4),
     )

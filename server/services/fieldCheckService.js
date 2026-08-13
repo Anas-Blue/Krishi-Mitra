@@ -56,12 +56,14 @@ async function runFieldCheck(fieldId) {
   try {
     yieldResult = await pythonClient.predictYield({
       crop: field.crop,
-      season: 'Kharif', // Default; could be derived from sowing month
+      season: gddEngine.deriveSeason(field.sowingDate, field.crop),
       state: field.location.state,
       area_ha: areaHa,
       annual_rainfall_mm: totalHistoricalRain,
-      fertilizer_kg_ha: 100, // Default estimate; future: from soil record
-      pesticide_kg_ha: 5,
+      // Omitted on purpose: the AI service fills these from the state's median
+      // agronomic intensity. The old hardcoded 100 kg/ha and 5 kg/ha were a
+      // guess, and 5 kg/ha of pesticide is ~13x the dataset maximum, which put
+      // every request outside the range the model was fitted on.
       gdd_pct: gddPct,
       tmax_series: tmaxSeries,
       daily_rainfall: rainfallSeries,
@@ -83,6 +85,10 @@ async function runFieldCheck(fieldId) {
     field.current.yieldRangeLow = yieldResult.yield_range_low;
     field.current.yieldRangeHigh = yieldResult.yield_range_high;
     field.current.stressFactor = yieldResult.stress_factor;
+    // Not every crop is measured in tonnes/ha (coconut is nuts/ha), and a
+    // low-confidence fallback must not be rendered as a firm number.
+    field.current.yieldUnit = yieldResult.unit;
+    field.current.yieldConfidence = yieldResult.confidence;
   }
 
   // ── Step 5: Event detection ──
@@ -152,6 +158,7 @@ async function runFieldCheck(fieldId) {
     // ── Step 9: Validator ──
     const validationResult = validate({
       yieldEstimate: yieldResult?.predicted_yield,
+      crop: field.crop,
       dose: advisory.dose,
       cumGdd,
       finalAction,

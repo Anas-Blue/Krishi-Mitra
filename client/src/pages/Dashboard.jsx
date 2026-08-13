@@ -24,6 +24,18 @@ export default function Dashboard() {
 
   const unread = recentEvents.filter((e) => !e.read).length;
 
+  // Averaging yields across crops only means something when the units agree —
+  // mixing rice (t/ha) with coconut (nuts/ha) would produce a nonsense figure.
+  const avgYield = (() => {
+    const scored = fields.filter((f) => f.current?.yieldEstimate > 0);
+    if (scored.length === 0) return '—';
+    const units = new Set(scored.map((f) => f.current?.yieldUnit || 't/ha'));
+    if (units.size > 1) return 'mixed units';
+    const unit = [...units][0];
+    const mean = scored.reduce((s, f) => s + f.current.yieldEstimate, 0) / scored.length;
+    return `${mean.toFixed(unit === 'nuts/ha' ? 0 : 2)} ${unit}`;
+  })();
+
   if (loading) {
     return <div className="flex items-center justify-center h-64"><div className="spinner" /></div>;
   }
@@ -58,7 +70,7 @@ export default function Dashboard() {
         {[
           { label: 'Total Fields', hindi: 'कुल खेत', value: fields.length },
           { label: 'Active', hindi: 'सक्रिय', value: fields.filter((f) => f.status === 'active').length },
-          { label: 'Avg Yield', hindi: 'औसत उपज', value: fields.length ? (fields.reduce((s, f) => s + (f.current?.yieldEstimate || 0), 0) / fields.length).toFixed(2) + ' t/ha' : '—' },
+          { label: 'Avg Yield', hindi: 'औसत उपज', value: avgYield },
           { label: 'Alerts', hindi: 'सूचनाएं', value: unread },
         ].map((s) => (
           <div key={s.label} className="glass-card p-4">

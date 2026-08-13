@@ -1,4 +1,7 @@
 const mongoose = require('mongoose');
+const cropParams = require('../data/cropParams.json');
+
+const SUPPORTED_CROPS = new Set(Object.keys(cropParams.crops));
 
 const SoilSchema = new mongoose.Schema(
   {
@@ -34,6 +37,13 @@ const CurrentStateSchema = new mongoose.Schema(
     yieldEstimate: Number,
     yieldRangeLow: Number,
     yieldRangeHigh: Number,
+    // Yields are not all in tonnes/ha (coconut is nuts/ha), and a prediction
+    // built from a coarse fallback must not be displayed as a firm number.
+    yieldUnit: { type: String, default: 't/ha' },
+    yieldConfidence: {
+      type: String,
+      enum: ['high', 'medium', 'low', 'very_low'],
+    },
     stressFactor: Number,
     lastCheckedAt: Date,
   },
@@ -74,10 +84,17 @@ const FieldSchema = new mongoose.Schema(
       trim: true,
       maxlength: 100,
     },
+    // Any crop the yield model was trained on, not just the original three.
+    // Stored canonicalised (lowercase dataset key) so lookups stay stable.
     crop: {
       type: String,
-      enum: ['rice', 'wheat', 'maize'],
       required: true,
+      lowercase: true,
+      trim: true,
+      validate: {
+        validator: (value) => SUPPORTED_CROPS.has(value),
+        message: (props) => `${props.value} is not a supported crop`,
+      },
     },
     variety: { type: String, trim: true },
     sowingDate: { type: Date, required: true },

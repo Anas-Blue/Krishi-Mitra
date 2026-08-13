@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { cropLabel } from '../constants/crops';
 
 const STAGE_COLORS = {
   seedling: '#4ade80',
@@ -22,6 +23,9 @@ export default function FieldCard({ field }) {
   const yieldEst = field.current?.yieldEstimate;
   const yieldLow = field.current?.yieldRangeLow;
   const yieldHigh = field.current?.yieldRangeHigh;
+  // Not every crop is tonnes/ha — coconut is nuts/ha.
+  const unit = field.current?.yieldUnit || 't/ha';
+  const decimals = unit === 'nuts/ha' ? 0 : 2;
 
   return (
     <Link
@@ -62,9 +66,9 @@ export default function FieldCard({ field }) {
         <div className="flex items-center justify-between text-sm">
           <span className="text-slate-400">उपज / Yield</span>
           <span className="text-white font-medium">
-            {yieldEst.toFixed(2)} t/ha
+            {yieldEst.toFixed(decimals)} {unit}
             {yieldLow && yieldHigh && (
-              <span className="text-slate-400 text-xs ml-1">({yieldLow.toFixed(1)}–{yieldHigh.toFixed(1)})</span>
+              <span className="text-slate-400 text-xs ml-1">({yieldLow.toFixed(decimals)}–{yieldHigh.toFixed(decimals)})</span>
             )}
           </span>
         </div>
@@ -72,7 +76,7 @@ export default function FieldCard({ field }) {
 
       {/* Area & crop */}
       <div className="flex items-center justify-between text-xs text-slate-500 border-t border-white/10 pt-2">
-        <span className="capitalize">{field.crop} • {field.areaAcre} acres</span>
+        <span>{cropLabel(field.crop)} • {field.areaAcre} acres</span>
         <span className={`px-2 py-0.5 rounded-full ${field.status === 'active' ? 'bg-agri-900/60 text-agri-400' : 'bg-slate-700 text-slate-400'}`}>
           {field.status}
         </span>

@@ -145,7 +145,7 @@ async function detectAndCreateEvents(
         type: 'YIELD_SHIFT',
         severity: 'medium',
         title: `Yield estimate ${direction}`,
-        message: `Predicted yield ${direction} by ${(shift * 100).toFixed(1)}% to ${yieldResult.predicted_yield.toFixed(2)} t/ha.`,
+        message: `Predicted yield ${direction} by ${(shift * 100).toFixed(1)}% to ${yieldResult.predicted_yield.toFixed(2)} ${yieldResult.unit || 't/ha'}.`,
         evidence: {
           previousYield: lastYieldEntry.estimate,
           currentYield: yieldResult.predicted_yield,

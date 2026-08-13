@@ -66,13 +66,16 @@ app.add_middleware(
 
 class YieldPredictRequest(BaseModel):
     crop: str
-    season: str
+    season: str = "Kharif"
     state: str
     area_ha: float = Field(..., gt=0)
-    annual_rainfall_mm: float = Field(..., ge=0)
-    fertilizer_kg_ha: float = Field(default=100.0, ge=0)
-    pesticide_kg_ha: float = Field(default=5.0, ge=0)
-    gdd_pct: float = Field(..., ge=0, le=1)
+    annual_rainfall_mm: float = Field(default=0.0, ge=0)
+    # None means "use the state's median intensity". The previous defaults of
+    # 100 and 5 kg/ha were guesses, and 5 kg/ha of pesticide sits ~13x above the
+    # training data's maximum, so every unspecified request was extrapolating.
+    fertilizer_kg_ha: Optional[float] = Field(default=None, ge=0)
+    pesticide_kg_ha: Optional[float] = Field(default=None, ge=0)
+    gdd_pct: float = Field(default=0.5, ge=0, le=1)
     tmax_series: list[float] = Field(default_factory=list)
     daily_rainfall: list[float] = Field(default_factory=list)
 
@@ -94,6 +97,21 @@ class ExplainRequest(BaseModel):
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "krishi-ai"}
+
+
+@app.get("/model-info")
+def model_info():
+    """
+    Published accuracy of the shipped model, measured on a temporal holdout the
+    model never saw. Exposed so the number in the UI can be traced to a
+    measurement instead of being folklore.
+    """
+    return {"success": True, "data": ym.model_info()}
+
+
+@app.get("/crops")
+def supported_crops():
+    return {"success": True, "data": {"crops": ym.supported_crops()}}
 
 
 @app.post("/predict-yield", dependencies=[Depends(verify_service_key)])

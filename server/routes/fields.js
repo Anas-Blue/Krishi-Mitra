@@ -8,8 +8,23 @@ const { runFieldCheck } = require('../services/fieldCheckService');
 const { getFieldWeather } = require('../services/weatherService');
 const pythonClient = require('../services/pythonClient');
 
+const gddEngine = require('../services/gddEngine');
+
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 10 * 1024 * 1024 } });
+
+// Crop catalogue is public: the field-creation form needs it before the user
+// has an account, and it contains no user data.
+router.get('/crops', (req, res) => {
+  const crops = Object.entries(gddEngine.CROP_PARAMS).map(([value, params]) => ({
+    value,
+    label: value.replace(/\b\w/g, (c) => c.toUpperCase()),
+    family: params.family,
+    unit: params.unit,
+    perennial: params.perennial,
+  }));
+  return successResponse(res, { crops });
+});
 
 router.use(authenticate);
 
@@ -22,8 +37,14 @@ router.post(
     if (!name || !crop || !sowingDate || !areaAcre || !location) {
       return errorResponse(res, 'name, crop, sowingDate, areaAcre, and location are required', 400);
     }
-    if (!['rice', 'wheat', 'maize'].includes(crop)) {
-      return errorResponse(res, 'crop must be rice, wheat, or maize', 400);
+    // Accept any crop the model knows, under any alias or casing the UI sends.
+    const cropKey = gddEngine.canonicalCrop(crop);
+    if (!gddEngine.CROP_PARAMS[cropKey]) {
+      return errorResponse(
+        res,
+        `Unsupported crop "${crop}". See GET /fields/crops for the supported list.`,
+        400
+      );
     }
     if (!location.district || !location.state || location.lat == null || location.lon == null) {
       return errorResponse(res, 'location.district, state, lat, lon are required', 400);
@@ -32,7 +53,7 @@ router.post(
     const field = await Field.create({
       userId: req.user._id,
       name,
-      crop,
+      crop: cropKey,
       variety,
       sowingDate: new Date(sowingDate),
       areaAcre: Number(areaAcre),

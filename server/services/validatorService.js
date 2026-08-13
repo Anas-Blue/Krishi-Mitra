@@ -4,10 +4,31 @@
  * PRD §10: Validator section.
  */
 
+const cropParams = require('../data/cropParams.json');
+
 const VALID_FINAL_ACTIONS = new Set(['APPLY', 'WAIT', 'HOLD', 'HARVEST']);
-const YIELD_MIN_T_HA = 0.3;
-const YIELD_MAX_T_HA = 12;
 const MAX_FERTILIZER_KG_ACRE = 60;
+
+// Fallback for a crop with no observed distribution — cereal-ish, deliberately wide.
+const DEFAULT_YIELD_MIN = 0.05;
+const DEFAULT_YIELD_MAX = 50;
+
+/**
+ * Plausible yield bounds for a crop, from its observed 1st/99th percentile in
+ * the training data (see ai-service/export_crop_params.py).
+ *
+ * A single 0.3-12 t/ha gate used to be applied to every crop. That is a cereal
+ * range: it rejects sugarcane (~57 t/ha), banana (~18) and coconut (~8,900
+ * nuts/ha) as "physically impossible", and is far too loose for cardamom (~0.1).
+ */
+function yieldBounds(crop) {
+  const params = cropParams.crops[String(crop || '').toLowerCase()];
+  return {
+    min: params?.yieldMin ?? DEFAULT_YIELD_MIN,
+    max: params?.yieldMax ?? DEFAULT_YIELD_MAX,
+    unit: params?.unit ?? 't/ha',
+  };
+}
 
 /**
  * @param {object} params
@@ -15,21 +36,21 @@ const MAX_FERTILIZER_KG_ACRE = 60;
  */
 function validate({
   yieldEstimate,
+  crop,
   dose,
   cumGdd,
   finalAction,
   activeHazard,
 }) {
-  // Yield range check
-  if (
-    yieldEstimate !== null &&
-    yieldEstimate !== undefined &&
-    (yieldEstimate < YIELD_MIN_T_HA || yieldEstimate > YIELD_MAX_T_HA)
-  ) {
-    return {
-      passed: false,
-      reason: `Yield estimate ${yieldEstimate} t/ha is outside valid range (${YIELD_MIN_T_HA}–${YIELD_MAX_T_HA} t/ha).`,
-    };
+  // Yield range check, against this crop's own plausible range
+  if (yieldEstimate !== null && yieldEstimate !== undefined) {
+    const { min, max, unit } = yieldBounds(crop);
+    if (yieldEstimate < min || yieldEstimate > max) {
+      return {
+        passed: false,
+        reason: `Yield estimate ${yieldEstimate} ${unit} is outside the plausible range for ${crop || 'this crop'} (${min}–${max} ${unit}).`,
+      };
+    }
   }
 
   // Fertilizer dose check

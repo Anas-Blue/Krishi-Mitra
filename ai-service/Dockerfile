@@ -1,4 +1,5 @@
-FROM python:3.11-slim
+# Must match the interpreter the model was trained under — see requirements.txt.
+FROM python:3.13-slim
 
 WORKDIR /app
 
@@ -9,9 +10,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy source + pre-trained model (commit yield_model.pkl before deploying)
 COPY . .
 
-# Fail loudly at build time if model is missing
-RUN python -c "import joblib, os; joblib.load('yield_model.pkl')" || \
-    (echo 'ERROR: yield_model.pkl not found. Run python train_model.py locally and commit the file.' && exit 1)
+# Fail at build time rather than on the first request: verify the model loads
+# under the installed scikit-learn, and that it is a bundle from the current
+# training script rather than a stale pkl missing the prior tables.
+RUN python -c "\
+import joblib, sys; \
+b = joblib.load('yield_model.pkl'); \
+missing = {'model','encoders','priors','interval_z'} - set(b); \
+sys.exit('ERROR: yield_model.pkl is stale, missing %s. Re-run train_model.py and commit it.' % missing) if missing else None; \
+print('model OK:', type(b['model']).__name__, len(b['known_crops']), 'crops')"
 
 EXPOSE 8000
 
