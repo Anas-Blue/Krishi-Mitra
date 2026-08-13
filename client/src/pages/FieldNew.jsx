@@ -84,15 +84,15 @@ export default function FieldNew() {
         <div className="glass-card p-6 space-y-5">
           <h2 className="font-semibold text-white">फसल की जानकारी / Crop Details</h2>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">खेत का नाम / Field Name</label>
-            <input id="field-name" type="text" value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="e.g. North Field" className={inputClass} />
+            <label className="block text-sm text-slate-300 mb-1">खेत का नाम / Field Name <span className="text-red-400">*</span></label>
+            <input id="field-name" type="text" value={form.name} onChange={(e) => { update('name', e.target.value); if (error) setError(''); }} placeholder="e.g. North Field" className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-3">फसल / Crop</label>
+            <label className="block text-sm text-slate-300 mb-3">फसल / Crop <span className="text-red-400">*</span></label>
             <div className="grid grid-cols-3 gap-3">
               {QUICK_PICKS.map((value) => (
-                <button key={value} type="button" onClick={() => update('crop', value)}
-                  className={`p-4 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all ${form.crop === value ? 'border-agri-500 bg-agri-900/40 text-agri-400' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
+                <button key={value} type="button" onClick={() => { update('crop', value); if (error) setError(''); }}
+                  className={`p-4 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all cursor-pointer ${form.crop === value ? 'border-agri-500 bg-agri-900/40 text-agri-400 font-semibold' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
                   <span className="text-xs font-medium">{cropLabel(value)}</span>
                 </button>
               ))}
@@ -103,13 +103,16 @@ export default function FieldNew() {
             </label>
             <select
               id="crop-select"
-              value={QUICK_PICKS.includes(form.crop) ? '' : form.crop}
-              onChange={(e) => update('crop', e.target.value)}
-              className={inputClass}
+              value={form.crop || ''}
+              onChange={(e) => {
+                update('crop', e.target.value);
+                if (error) setError('');
+              }}
+              className={`${inputClass} bg-slate-900 text-white cursor-pointer`}
             >
-              <option value="">— select —</option>
+              <option value="" className="bg-slate-900 text-slate-400">— select —</option>
               {crops.map((c) => (
-                <option key={c.value} value={c.value} className="bg-slate-900">
+                <option key={c.value} value={c.value} className="bg-slate-900 text-white">
                   {cropLabel(c.value)}
                 </option>
               ))}
@@ -117,22 +120,44 @@ export default function FieldNew() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-300 mb-1">किस्म / Variety</label>
+              <label className="block text-sm text-slate-300 mb-1">किस्म / Variety (Optional)</label>
               <input type="text" value={form.variety} onChange={(e) => update('variety', e.target.value)} placeholder="e.g. Swarna, HD-2967" className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm text-slate-300 mb-1">बुवाई तिथि / Sowing Date</label>
-              <input id="sowing-date" type="date" value={form.sowingDate} onChange={(e) => update('sowingDate', e.target.value)} className={inputClass} />
+              <label className="block text-sm text-slate-300 mb-1">बुवाई तिथि / Sowing Date <span className="text-red-400">*</span></label>
+              <input id="sowing-date" type="date" value={form.sowingDate} onChange={(e) => { update('sowingDate', e.target.value); if (error) setError(''); }} className={inputClass} />
             </div>
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">क्षेत्र (एकड़) / Area (acres)</label>
-            <input id="area-acre" type="number" step="0.1" min="0.1" value={form.areaAcre} onChange={(e) => update('areaAcre', e.target.value)} placeholder="e.g. 2.5" className={inputClass} />
+            <label className="block text-sm text-slate-300 mb-1">क्षेत्र (एकड़) / Area (acres) <span className="text-red-400">*</span></label>
+            <input id="area-acre" type="number" step="0.1" min="0.1" value={form.areaAcre} onChange={(e) => { update('areaAcre', e.target.value); if (error) setError(''); }} placeholder="e.g. 2.5" className={inputClass} />
           </div>
           <button
-            onClick={() => setStep(2)}
-            disabled={!form.name || !form.crop || !form.sowingDate || !form.areaAcre}
-            className="w-full py-3 bg-agri-600 hover:bg-agri-500 disabled:opacity-40 text-white rounded-lg font-semibold transition-colors"
+            type="button"
+            onClick={() => {
+              if (!form.name.trim()) {
+                setError('कृपया खेत का नाम भरें / Please enter a Field Name');
+                document.getElementById('field-name')?.focus();
+                return;
+              }
+              if (!form.crop) {
+                setError('कृपया फसल चुनें / Please select a Crop');
+                return;
+              }
+              if (!form.sowingDate) {
+                setError('कृपया बुवाई तिथि चुनें / Please select a Sowing Date');
+                document.getElementById('sowing-date')?.focus();
+                return;
+              }
+              if (!form.areaAcre || Number(form.areaAcre) <= 0) {
+                setError('कृपया मान्य क्षेत्र दर्ज करें / Please enter a valid Area (acres)');
+                document.getElementById('area-acre')?.focus();
+                return;
+              }
+              setError('');
+              setStep(2);
+            }}
+            className="w-full py-3 bg-agri-600 hover:bg-agri-500 text-white rounded-lg font-semibold transition-colors cursor-pointer shadow-lg hover:shadow-agri-500/20 active:scale-[0.99]"
           >
             Next: Location →
           </button>
