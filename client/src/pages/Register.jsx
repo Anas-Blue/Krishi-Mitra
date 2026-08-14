@@ -35,11 +35,23 @@ export default function Register() {
   const selectClass = "w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:border-agri-500 focus:ring-1 focus:ring-agri-500 transition-colors cursor-pointer";
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-8">
-      <div className="glass-card p-8 w-full max-w-md fade-in">
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-white font-outfit">Register / पंजीकरण</h1>
-          <p className="text-slate-400 text-sm mt-1">Create your farmer account</p>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+      <div className="glass-card max-w-5xl w-full overflow-hidden grid md:grid-cols-12 border border-agri-500/30 shadow-2xl fade-in">
+        {/* Left Side: Farmer Image Banner */}
+        <div className="relative hidden md:block md:col-span-5">
+          <img
+            src={farmerHero}
+            alt="Smiling Indian Farmer in crop field"
+            className="w-full h-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+          <div className="absolute bottom-8 left-8 right-8 z-10">
+            <div className="text-3xl mb-2">🌱</div>
+            <h2 className="text-2xl font-bold text-white font-sans mb-2">Join KrishiMitra</h2>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              Empowering Indian farmers with live yield prediction & GDD stage monitoring from sowing to harvest.
+            </p>
+          </div>
         </div>
 
         {/* Right Side: Form */}
@@ -72,15 +84,30 @@ export default function Register() {
               <input id="reg-password" type="password" name="password" value={form.password} onChange={handleChange} required minLength={6} placeholder="Minimum 6 characters" className={inputClass} />
             </div>
 
-          <div>
-            <label className="block text-sm text-slate-300 mb-1">भाषा / Language</label>
-            <div className="flex gap-3">
-              {[['en', 'English'], ['hi', 'हिन्दी']].map(([val, label]) => (
-                <label key={val} className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-lg border cursor-pointer transition-colors ${form.language === val ? 'border-agri-500 bg-agri-900/40 text-agri-400' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
-                  <input type="radio" name="language" value={val} checked={form.language === val} onChange={handleChange} className="hidden" />
-                  {label}
-                </label>
-              ))}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">जिला / District</label>
+                <input id="reg-district" type="text" name="district" value={form.district} onChange={handleChange} placeholder="Barabanki" className={inputClass} />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">राज्य / State</label>
+                <select id="reg-state" name="state" value={form.state} onChange={handleChange} className={selectClass}>
+                  <option value="" style={{ backgroundColor: '#1e293b', color: '#94a3b8' }}>Select state</option>
+                  {STATES.map((s) => <option key={s} value={s} style={{ backgroundColor: '#1e293b', color: '#ffffff' }}>{s}</option>)}
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1">भाषा / Language</label>
+              <div className="flex gap-3">
+                {[['en', '🇬🇧 English'], ['hi', '🇮🇳 हिन्दी']].map(([val, label]) => (
+                  <label key={val} className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg border cursor-pointer transition-colors text-sm font-medium ${form.language === val ? 'border-agri-500 bg-agri-600 text-white' : 'border-slate-700 bg-slate-800 text-slate-300 hover:border-slate-600 hover:bg-slate-750'}`}>
+                    <input type="radio" name="language" value={val} checked={form.language === val} onChange={handleChange} className="hidden" />
+                    {label}
+                  </label>
+                ))}
+              </div>
             </div>
 
             <button
