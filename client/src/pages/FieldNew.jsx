@@ -63,43 +63,43 @@ export default function FieldNew() {
     }
   }
 
-  const inputClass = "w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agri-500 transition-colors";
+  const inputClass = "w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-4 py-2.5 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:border-green-600 focus:ring-1 focus:ring-green-600 transition-colors text-sm font-medium";
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10 fade-in">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white font-sans">नया खेत जोड़ें / Add New Field</h1>
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white font-sans">नया खेत जोड़ें / Add New Field</h1>
         <div className="flex gap-2 mt-4">
           {['Crop', 'Location', 'Soil'].map((label, i) => (
-            <div key={label} className={`flex-1 h-1.5 rounded-full transition-colors ${step > i ? 'bg-agri-500' : step === i + 1 ? 'bg-agri-700' : 'bg-white/10'}`} />
+            <div key={label} className={`flex-1 h-2 rounded-full transition-colors ${step > i ? 'bg-green-600' : step === i + 1 ? 'bg-green-500' : 'bg-slate-200 dark:bg-white/10'}`} />
           ))}
         </div>
-        <p className="text-slate-400 text-sm mt-2">Step {step} of 3</p>
+        <p className="text-slate-600 dark:text-slate-400 text-sm font-semibold mt-2">Step {step} of 3</p>
       </div>
 
-      {error && <div className="bg-red-900/40 border border-red-800 text-red-300 px-4 py-3 rounded-lg text-sm mb-4">{error}</div>}
+      {error && <div className="bg-red-50 dark:bg-red-900/40 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 px-4 py-3 rounded-lg text-sm mb-4 font-medium">{error}</div>}
 
       {/* Step 1: Crop */}
       {step === 1 && (
         <div className="glass-card p-6 space-y-5">
-          <h2 className="font-semibold text-white">फसल की जानकारी / Crop Details</h2>
+          <h2 className="font-bold text-lg text-slate-900 dark:text-white">फसल की जानकारी / Crop Details</h2>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">खेत का नाम / Field Name <span className="text-red-400">*</span></label>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">खेत का नाम / Field Name <span className="text-red-500">*</span></label>
             <input id="field-name" type="text" value={form.name} onChange={(e) => { update('name', e.target.value); if (error) setError(''); }} placeholder="e.g. North Field" className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-3">फसल / Crop <span className="text-red-400">*</span></label>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">फसल / Crop <span className="text-red-500">*</span></label>
             <div className="grid grid-cols-3 gap-3">
               {QUICK_PICKS.map((value) => (
                 <button key={value} type="button" onClick={() => { update('crop', value); if (error) setError(''); }}
-                  className={`p-4 rounded-xl border flex flex-col items-center justify-center gap-2 transition-all cursor-pointer ${form.crop === value ? 'border-agri-500 bg-agri-900/40 text-agri-400 font-semibold' : 'border-white/10 text-slate-400 hover:border-white/30'}`}>
-                  <span className="text-xs font-medium">{cropLabel(value)}</span>
+                  className={`p-3.5 rounded-xl border flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer ${form.crop === value ? 'border-green-600 bg-green-50 text-green-800 font-bold dark:border-agri-500 dark:bg-agri-900/40 dark:text-agri-400 shadow-xs' : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 dark:border-white/10 dark:bg-transparent dark:text-slate-400 dark:hover:border-white/30'}`}>
+                  <span className="text-xs">{cropLabel(value)}</span>
                 </button>
               ))}
             </div>
-            <label htmlFor="crop-select" className="block text-sm text-slate-300 mt-4 mb-1">
+            <label htmlFor="crop-select" className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mt-4 mb-1.5">
               या कोई और फसल चुनें / Or choose another crop
-              {crops.length > 0 && <span className="text-slate-500"> ({crops.length} available)</span>}
+              {crops.length > 0 && <span className="text-slate-500 font-normal"> ({crops.length} available)</span>}
             </label>
             <select
               id="crop-select"
@@ -108,11 +108,11 @@ export default function FieldNew() {
                 update('crop', e.target.value);
                 if (error) setError('');
               }}
-              className={`${inputClass} bg-slate-900 text-white cursor-pointer`}
+              className={`${inputClass} cursor-pointer`}
             >
-              <option value="" className="bg-slate-900 text-slate-400">— select —</option>
+              <option value="">— select crop —</option>
               {crops.map((c) => (
-                <option key={c.value} value={c.value} className="bg-slate-900 text-white">
+                <option key={c.value} value={c.value} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                   {cropLabel(c.value)}
                 </option>
               ))}
@@ -120,16 +120,16 @@ export default function FieldNew() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-300 mb-1">किस्म / Variety (Optional)</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">किस्म / Variety (Optional)</label>
               <input type="text" value={form.variety} onChange={(e) => update('variety', e.target.value)} placeholder="e.g. Swarna, HD-2967" className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm text-slate-300 mb-1">बुवाई तिथि / Sowing Date <span className="text-red-400">*</span></label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">बुवाई तिथि / Sowing Date <span className="text-red-500">*</span></label>
               <input id="sowing-date" type="date" value={form.sowingDate} onChange={(e) => { update('sowingDate', e.target.value); if (error) setError(''); }} className={inputClass} />
             </div>
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">क्षेत्र (एकड़) / Area (acres) <span className="text-red-400">*</span></label>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">क्षेत्र (एकड़) / Area (acres) <span className="text-red-500">*</span></label>
             <input id="area-acre" type="number" step="0.1" min="0.1" value={form.areaAcre} onChange={(e) => { update('areaAcre', e.target.value); if (error) setError(''); }} placeholder="e.g. 2.5" className={inputClass} />
           </div>
           <button
@@ -157,7 +157,7 @@ export default function FieldNew() {
               setError('');
               setStep(2);
             }}
-            className="w-full py-3 bg-agri-600 hover:bg-agri-500 text-white rounded-lg font-semibold transition-colors cursor-pointer shadow-lg hover:shadow-agri-500/20 active:scale-[0.99]"
+            className="w-full py-3.5 bg-green-700 hover:bg-green-600 text-white rounded-xl font-bold text-sm transition-colors cursor-pointer shadow-lg shadow-green-700/20 active:scale-[0.99] mt-2"
           >
             Next: Location →
           </button>
@@ -167,34 +167,34 @@ export default function FieldNew() {
       {/* Step 2: Location */}
       {step === 2 && (
         <div className="glass-card p-6 space-y-5">
-          <h2 className="font-semibold text-white">स्थान / Location</h2>
+          <h2 className="font-bold text-lg text-slate-900 dark:text-white">स्थान / Location</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-300 mb-1">जिला / District</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">जिला / District</label>
               <input id="loc-district" type="text" value={form.location.district} onChange={(e) => updateLoc('district', e.target.value)} placeholder="Barabanki" className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm text-slate-300 mb-1">राज्य / State</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">राज्य / State</label>
               <input id="loc-state" type="text" value={form.location.state} onChange={(e) => updateLoc('state', e.target.value)} placeholder="Uttar Pradesh" className={inputClass} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-slate-300 mb-1">अक्षांश / Latitude</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">अक्षांश / Latitude</label>
               <input id="loc-lat" type="number" step="0.0001" value={form.location.lat} onChange={(e) => updateLoc('lat', e.target.value)} placeholder="26.9255" className={inputClass} />
             </div>
             <div>
-              <label className="block text-sm text-slate-300 mb-1">देशांतर / Longitude</label>
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">देशांतर / Longitude</label>
               <input id="loc-lon" type="number" step="0.0001" value={form.location.lon} onChange={(e) => updateLoc('lon', e.target.value)} placeholder="81.2045" className={inputClass} />
             </div>
           </div>
-          <p className="text-xs text-slate-500">Find lat/lon on Google Maps: right-click → What's here?</p>
-          <div className="flex gap-3">
-            <button onClick={() => setStep(1)} className="flex-1 py-3 border border-white/10 text-slate-400 rounded-lg hover:bg-white/5 transition-colors">← Back</button>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Find lat/lon on Google Maps: right-click → What's here?</p>
+          <div className="flex gap-3 pt-2">
+            <button onClick={() => setStep(1)} className="flex-1 py-3 border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">← Back</button>
             <button
               onClick={() => setStep(3)}
               disabled={!form.location.district || !form.location.state || !form.location.lat || !form.location.lon}
-              className="flex-1 py-3 bg-agri-600 hover:bg-agri-500 disabled:opacity-40 text-white rounded-lg font-semibold transition-colors"
+              className="flex-1 py-3 bg-green-700 hover:bg-green-600 disabled:opacity-40 text-white rounded-xl font-bold transition-colors shadow-md shadow-green-700/20"
             >Next: Soil →</button>
           </div>
         </div>
@@ -204,8 +204,8 @@ export default function FieldNew() {
       {step === 3 && (
         <div className="glass-card p-6 space-y-5">
           <div>
-            <h2 className="font-semibold text-white">मिट्टी परीक्षण / Soil Test</h2>
-            <p className="text-slate-500 text-xs mt-1">Optional — skip if no soil test data available</p>
+            <h2 className="font-bold text-lg text-slate-900 dark:text-white">मिट्टी परीक्षण / Soil Test</h2>
+            <p className="text-slate-500 dark:text-slate-400 text-xs mt-1 font-medium">Optional — skip if no soil test data available</p>
           </div>
           <div className="grid grid-cols-2 gap-4">
             {[
@@ -215,23 +215,23 @@ export default function FieldNew() {
               ['ph', 'pH', '6.8'],
             ].map(([key, label, placeholder]) => (
               <div key={key}>
-                <label className="block text-sm text-slate-300 mb-1">{label}</label>
+                <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">{label}</label>
                 <input type="number" step="0.1" value={form.soil[key]} onChange={(e) => updateSoil(key, e.target.value)} placeholder={placeholder} className={inputClass} />
               </div>
             ))}
           </div>
           <div>
-            <label className="block text-sm text-slate-300 mb-1">परीक्षण तिथि / Test Date</label>
+            <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1.5">परीक्षण तिथि / Test Date</label>
             <input type="date" value={form.soil.testedOn} onChange={(e) => updateSoil('testedOn', e.target.value)} className={inputClass} />
           </div>
-          <div className="flex gap-3">
-            <button onClick={() => setStep(2)} className="flex-1 py-3 border border-white/10 text-slate-400 rounded-lg hover:bg-white/5 transition-colors">← Back</button>
+          <div className="flex gap-3 pt-2">
+            <button onClick={() => setStep(2)} className="flex-1 py-3 border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-300 rounded-xl font-semibold hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">← Back</button>
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="flex-1 py-3 bg-agri-600 hover:bg-agri-500 disabled:opacity-50 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+              className="flex-1 py-3.5 bg-green-700 hover:bg-green-600 disabled:opacity-50 text-white rounded-xl font-bold transition-colors flex items-center justify-center gap-2 shadow-md shadow-green-700/20"
             >
-              {loading ? <><div className="spinner w-5 h-5" /> Creating & checking...</> : 'Create Field'}
+              {loading ? <><div className="spinner w-4 h-4" /> Creating & checking...</> : 'Create Field'}
             </button>
           </div>
         </div>
