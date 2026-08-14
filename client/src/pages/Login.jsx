@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import farmerHero from '../assets/farmer_hero.jpg';
 
 export default function Login() {
   const { login } = useAuth();
@@ -30,73 +29,73 @@ export default function Login() {
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="glass-card p-8 w-full max-w-md fade-in">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-white font-outfit">KrishiMitra</h1>
-          <p className="text-slate-400 text-sm mt-1">लॉगिन करें / Sign In</p>
+          <div className="text-4xl mb-2">🌾</div>
+          <h1 className="text-2xl font-bold text-white font-sans">Welcome Back / स्वागत है</h1>
+          <p className="text-slate-400 text-sm mt-1">लॉगिन करें / Sign In to your field portal</p>
         </div>
 
-        {/* Right Side: Form */}
-        <div className="p-8 flex flex-col justify-center">
-          <div className="text-center md:text-left mb-6">
-            <div className="md:hidden text-4xl mb-2">🌾</div>
-            <h1 className="text-2xl font-bold text-white font-sans">Welcome Back / स्वागत है</h1>
-            <p className="text-slate-400 text-sm mt-1">लॉगिन करें / Sign In to your field portal</p>
+        {error && (
+          <div className="bg-red-900/40 border border-red-800 text-red-300 px-4 py-3 rounded-lg text-sm mb-4">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm text-slate-300 mb-1 font-medium">
+              फोन नंबर / Phone Number
+            </label>
+            <input
+              id="login-phone"
+              type="tel"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              required
+              maxLength={10}
+              pattern="\d{10}"
+              placeholder="10-digit mobile number"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agri-500 transition-colors"
+            />
           </div>
 
-          {error && (
-            <div className="bg-red-900/40 border border-red-800 text-red-300 px-4 py-3 rounded-lg text-sm mb-4">
-              {error}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm text-slate-300 mb-1 font-medium">
-                फोन नंबर / Phone Number
-              </label>
-              <input
-                id="login-phone"
-                type="tel"
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                required
-                maxLength={10}
-                pattern="\d{10}"
-                placeholder="10-digit mobile number"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agri-500 transition-colors"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm text-slate-300 mb-1 font-medium">
-                पासवर्ड / Password
-              </label>
-              <input
-                id="login-password"
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                required
-                placeholder="Enter password"
-                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agri-500 transition-colors"
-              />
-            </div>
-
-
-          <div className="mt-6 text-center text-xs text-slate-400 bg-white/5 p-2.5 rounded-lg">
-            Demo Farmer Login: <code className="text-agri-400 font-mono">9999999999</code> / <code className="text-agri-400 font-mono">demo1234</code>
+          <div>
+            <label className="block text-sm text-slate-300 mb-1 font-medium">
+              पासवर्ड / Password
+            </label>
+            <input
+              id="login-password"
+              type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+              placeholder="Enter password"
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-slate-500 focus:outline-none focus:border-agri-500 transition-colors"
+            />
           </div>
 
-          <p className="mt-6 text-center text-sm text-slate-400">
-            New farmer?{' '}
-            <Link to="/register" className="text-agri-400 hover:text-agri-300 font-semibold">
-              Register here / पंजीकरण करें
-            </Link>
-          </p>
+          <button
+            id="login-submit"
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-agri-600 hover:bg-agri-500 disabled:opacity-50 text-white rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 agri-glow"
+          >
+            {loading ? <><div className="spinner w-5 h-5" /> Logging in...</> : 'Login / लॉगिन करें'}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center text-xs text-slate-400 bg-white/5 p-2.5 rounded-lg">
+          Demo Farmer Login: <code className="text-agri-400 font-mono">9999999999</code> / <code className="text-agri-400 font-mono">demo1234</code>
         </div>
+
+        <p className="mt-6 text-center text-sm text-slate-400">
+          New farmer?{' '}
+          <Link to="/register" className="text-agri-400 hover:text-agri-300 font-semibold">
+            Register here / पंजीकरण करें
+          </Link>
+        </p>
       </div>
     </div>
   );
 }
-

@@ -15,6 +15,7 @@ import Alerts from './pages/Alerts';
 import Admin from './pages/Admin';
 import AdminFields from './pages/AdminFields';
 import AdminFarmers from './pages/AdminFarmers';
+import KrishiBotWidget from './components/KrishiBotWidget';
 
 export default function App() {
   return (
@@ -46,6 +47,7 @@ export default function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
+          <KrishiBotWidget />
         </div>
         </BrowserRouter>
       </AuthProvider>
