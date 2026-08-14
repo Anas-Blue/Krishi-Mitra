@@ -5,6 +5,7 @@ const authRoutes = require('./routes/auth');
 const fieldRoutes = require('./routes/fields');
 const eventRoutes = require('./routes/events');
 const adminRoutes = require('./routes/admin');
+const chatRoutes = require('./routes/chat');
 const { errorResponse } = require('./utils/response');
 
 function createApp() {
@@ -25,6 +26,7 @@ function createApp() {
   app.use('/api/fields', fieldRoutes);
   app.use('/api/events', eventRoutes);
   app.use('/api/admin', adminRoutes);
+  app.use('/api/chat', chatRoutes);
 
   // 404
   app.use((req, res) => errorResponse(res, `Route ${req.method} ${req.path} not found`, 404));
