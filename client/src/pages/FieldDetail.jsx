@@ -6,9 +6,7 @@ import GDDProgressBar from '../components/GDDProgressBar';
 import YieldChart from '../components/YieldChart';
 import RainfallChart from '../components/RainfallChart';
 import AdvisoryPanel from '../components/AdvisoryPanel';
-import AlertCard from '../components/AlertCard';
 import { CROP_PARAMS_MATURITY } from '../utils/cropConstants';
-
 
 export default function FieldDetail() {
   const { id } = useParams();
@@ -27,7 +25,7 @@ export default function FieldDetail() {
       getEvents(id),
     ]);
     setField(fieldResp.data.data.field);
-    const evs = eventsResp.data.data.events;
+    const evs = eventsResp.data.data.events || [];
     setEvents(evs);
     const advisory = evs.find((e) => e.advisory?.finalAction && e.advisory.finalAction !== 'NONE');
     setLatestAdvisory(advisory?.advisory || null);
@@ -80,9 +78,9 @@ export default function FieldDetail() {
   }
 
   if (loading) return <div className="flex items-center justify-center h-64"><div className="spinner" /></div>;
-  if (!field) return <div className="text-center text-slate-400 py-20">Field not found</div>;
+  if (!field) return <div className="text-center text-slate-500 py-20 font-medium text-lg">Field not found</div>;
 
-  const c = field.current;
+  const c = field.current || {};
   // Recover the crop's maturity target from the server's own numbers so the
   // client never has to keep its own per-crop table in sync. The static map is
   // only a fallback for a field that has not been checked yet.
@@ -106,16 +104,18 @@ export default function FieldDetail() {
       <div className="flex items-start justify-between flex-wrap gap-4 mb-8">
         <div className="flex items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white font-sans">{field.name}</h1>
-            <p className="text-slate-400 text-sm">{field.location.district}, {field.location.state} • {field.areaAcre} acres • <span className="capitalize">{field.crop}</span></p>
-            {field.variety && <p className="text-slate-500 text-xs">Variety: {field.variety}</p>}
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white font-sans">{field.name}</h1>
+            <p className="text-slate-600 dark:text-slate-400 text-sm font-medium mt-0.5">
+              {field.location?.district}, {field.location?.state} • {field.areaAcre} acres • <span className="capitalize font-semibold text-green-700 dark:text-agri-400">{field.crop}</span>
+            </p>
+            {field.variety && <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Variety: {field.variety}</p>}
           </div>
         </div>
         <div className="flex gap-3 flex-wrap">
           <button
             onClick={handleCheck}
             disabled={checking || field.status !== 'active'}
-            className="px-4 py-2 bg-agri-700 hover:bg-agri-600 disabled:opacity-40 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+            className="px-5 py-2.5 bg-green-700 hover:bg-green-600 disabled:opacity-40 text-white rounded-xl text-sm font-semibold transition-colors flex items-center gap-2 shadow-md shadow-green-700/20"
           >
             {checking ? <><div className="spinner w-4 h-4" /> Checking...</> : 'Run Check / जाँच करें'}
           </button>
@@ -123,7 +123,7 @@ export default function FieldDetail() {
             <button
               onClick={handleHarvest}
               disabled={harvesting}
-              className="px-4 py-2 bg-earth-600 hover:bg-earth-500 disabled:opacity-40 text-white rounded-lg text-sm font-medium transition-colors"
+              className="px-4 py-2.5 bg-amber-600 hover:bg-amber-500 disabled:opacity-40 text-white rounded-xl text-sm font-semibold transition-colors shadow-md shadow-amber-600/20"
             >
               Mark Harvested
             </button>
@@ -141,37 +141,39 @@ export default function FieldDetail() {
           {/* Key stats */}
           <div className="grid grid-cols-2 gap-4">
             <div className="glass-card p-4">
-              <p className="text-slate-400 text-xs mb-1">Harvest Estimate / कटाई अनुमान</p>
-              <p className="text-white font-semibold">
+              <p className="text-slate-600 dark:text-slate-400 text-xs font-semibold mb-1">Harvest Estimate / कटाई अनुमान</p>
+              <p className="text-slate-900 dark:text-white font-bold text-base">
                 {c.predictedHarvestDate
-                  ? new Date(c.predictedHarvestDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })
+                  ? new Date(c.predictedHarvestDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
                   : '—'}
               </p>
             </div>
             <div className="glass-card p-4">
-              <p className="text-slate-400 text-xs mb-1">Yield Estimate / उपज अनुमान</p>
-              <p className="text-white font-semibold">
-                {c.yieldEstimate?.toFixed(yieldDecimals) || '—'} {yieldUnit}
+              <p className="text-slate-600 dark:text-slate-400 text-xs font-semibold mb-1">Yield Estimate / उपज अनुमान</p>
+              <p className="text-slate-900 dark:text-white font-bold text-base">
+                {c.yieldEstimate != null ? c.yieldEstimate.toFixed(yieldDecimals) : '—'} {yieldUnit}
               </p>
-              {c.yieldRangeLow && c.yieldRangeHigh && (
-                <p className="text-slate-500 text-xs">
+              {c.yieldRangeLow != null && c.yieldRangeHigh != null && (
+                <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 font-medium">
                   {c.yieldRangeLow.toFixed(yieldDecimals)} – {c.yieldRangeHigh.toFixed(yieldDecimals)} {yieldUnit}
-                  <span className="ml-1 opacity-70">(80% likely range)</span>
+                  <span className="ml-1 opacity-75">(80% interval)</span>
                 </p>
               )}
               {confidenceNote && (
-                <p className="text-amber-400/80 text-xs mt-1">⚠ {confidenceNote}</p>
+                <p className="text-amber-600 dark:text-amber-400/90 text-xs font-medium mt-1">⚠ {confidenceNote}</p>
               )}
             </div>
             <div className="glass-card p-4">
-              <p className="text-slate-400 text-xs mb-1">Stress Factor</p>
-              <p className={`font-semibold ${(c.stressFactor || 1) < 0.8 ? 'text-red-400' : 'text-agri-400'}`}>
-                {c.stressFactor?.toFixed(3) || '—'}
+              <p className="text-slate-600 dark:text-slate-400 text-xs font-semibold mb-1">Stress Factor</p>
+              <p className={`font-bold text-base ${(c.stressFactor || 1) < 0.8 ? 'text-red-600 dark:text-red-400' : 'text-green-700 dark:text-agri-400'}`}>
+                {c.stressFactor != null ? c.stressFactor.toFixed(3) : '1.000'}
               </p>
             </div>
             <div className="glass-card p-4">
-              <p className="text-slate-400 text-xs mb-1">Last Checked</p>
-              <p className="text-white text-sm">{c.lastCheckedAt ? new Date(c.lastCheckedAt).toLocaleString('en-IN') : '—'}</p>
+              <p className="text-slate-600 dark:text-slate-400 text-xs font-semibold mb-1">Last Checked</p>
+              <p className="text-slate-900 dark:text-white font-medium text-sm">
+                {c.lastCheckedAt ? new Date(c.lastCheckedAt).toLocaleString('en-IN') : '—'}
+              </p>
             </div>
           </div>
 
@@ -184,18 +186,18 @@ export default function FieldDetail() {
           {latestAdvisory && <AdvisoryPanel advisory={latestAdvisory} />}
 
           {/* Event timeline */}
-          <div className="glass-card p-4">
-            <h3 className="text-sm font-semibold text-white mb-3">Event Timeline</h3>
+          <div className="glass-card p-5">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">Event Timeline</h3>
             {events.length === 0 ? (
-              <p className="text-slate-500 text-xs text-center py-4">No events yet. Run a check.</p>
+              <p className="text-slate-500 dark:text-slate-400 text-xs text-center py-4 font-medium">No events yet. Run an advisory check.</p>
             ) : (
-              <div className="space-y-2 max-h-96 overflow-y-auto">
+              <div className="space-y-2.5 max-h-96 overflow-y-auto pr-1">
                 {events.slice(0, 15).map((ev) => (
-                  <div key={ev._id} className="flex gap-2 text-xs py-2 border-b border-white/5">
-                    <span className={`w-2 h-2 rounded-full mt-1 flex-shrink-0 ${ev.severity === 'high' ? 'bg-red-500' : ev.severity === 'medium' ? 'bg-yellow-500' : 'bg-green-500'}`} />
+                  <div key={ev._id} className="flex gap-2.5 text-xs py-2 border-b border-slate-100 dark:border-white/5">
+                    <span className={`w-2.5 h-2.5 rounded-full mt-1 flex-shrink-0 ${ev.severity === 'high' ? 'bg-red-500' : ev.severity === 'medium' ? 'bg-amber-500' : 'bg-green-500'}`} />
                     <div>
-                      <p className="text-slate-300">{ev.title}</p>
-                      <p className="text-slate-500">{new Date(ev.createdAt).toLocaleDateString('en-IN')}</p>
+                      <p className="text-slate-900 dark:text-slate-200 font-semibold">{ev.title}</p>
+                      <p className="text-slate-500 dark:text-slate-400 text-[11px] font-medium">{new Date(ev.createdAt).toLocaleDateString('en-IN')}</p>
                     </div>
                   </div>
                 ))}
@@ -205,14 +207,14 @@ export default function FieldDetail() {
 
           {/* Soil info */}
           {field.soil && (Object.values(field.soil).some(Boolean)) && (
-            <div className="glass-card p-4">
-              <h3 className="text-sm font-semibold text-white mb-3">Soil / मिट्टी</h3>
-              <div className="space-y-1 text-xs">
-                {field.soil.nitrogen && <div className="flex justify-between"><span className="text-slate-400">N</span><span className="text-white">{field.soil.nitrogen} kg/ha</span></div>}
-                {field.soil.phosphorus && <div className="flex justify-between"><span className="text-slate-400">P</span><span className="text-white">{field.soil.phosphorus} kg/ha</span></div>}
-                {field.soil.potassium && <div className="flex justify-between"><span className="text-slate-400">K</span><span className="text-white">{field.soil.potassium} kg/ha</span></div>}
-                {field.soil.ph && <div className="flex justify-between"><span className="text-slate-400">pH</span><span className="text-white">{field.soil.ph}</span></div>}
-                {field.soil.testedOn && <div className="flex justify-between"><span className="text-slate-400">Tested</span><span className="text-white">{new Date(field.soil.testedOn).toLocaleDateString('en-IN')}</span></div>}
+            <div className="glass-card p-5">
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white mb-3">Soil Telemetry / मिट्टी</h3>
+              <div className="space-y-2 text-xs font-medium">
+                {field.soil.nitrogen && <div className="flex justify-between py-1 border-b border-slate-100 dark:border-white/5"><span className="text-slate-600 dark:text-slate-400">Nitrogen (N)</span><span className="text-slate-900 dark:text-white font-bold">{field.soil.nitrogen} kg/ha</span></div>}
+                {field.soil.phosphorus && <div className="flex justify-between py-1 border-b border-slate-100 dark:border-white/5"><span className="text-slate-600 dark:text-slate-400">Phosphorus (P)</span><span className="text-slate-900 dark:text-white font-bold">{field.soil.phosphorus} kg/ha</span></div>}
+                {field.soil.potassium && <div className="flex justify-between py-1 border-b border-slate-100 dark:border-white/5"><span className="text-slate-600 dark:text-slate-400">Potassium (K)</span><span className="text-slate-900 dark:text-white font-bold">{field.soil.potassium} kg/ha</span></div>}
+                {field.soil.ph && <div className="flex justify-between py-1 border-b border-slate-100 dark:border-white/5"><span className="text-slate-600 dark:text-slate-400">Soil pH</span><span className="text-slate-900 dark:text-white font-bold">{field.soil.ph}</span></div>}
+                {field.soil.testedOn && <div className="flex justify-between py-1"><span className="text-slate-600 dark:text-slate-400">Tested On</span><span className="text-slate-900 dark:text-white font-bold">{new Date(field.soil.testedOn).toLocaleDateString('en-IN')}</span></div>}
               </div>
             </div>
           )}

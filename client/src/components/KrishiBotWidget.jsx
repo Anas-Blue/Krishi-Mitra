@@ -8,9 +8,7 @@ import {
   Sprout,
   Loader2,
   Globe,
-  Bot,
   User,
-  Sparkles,
   ChevronDown,
 } from 'lucide-react';
 
@@ -25,10 +23,10 @@ const SUGGESTED_QUESTIONS = [
 
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-1.5 px-4 py-3 rounded-2xl rounded-bl-sm bg-slate-800/80 border border-white/10 w-fit">
-      <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:0ms]" />
-      <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:150ms]" />
-      <span className="w-2 h-2 bg-emerald-400 rounded-full animate-bounce [animation-delay:300ms]" />
+    <div className="flex items-center gap-1.5 px-4 py-3 rounded-2xl rounded-bl-sm bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/10 w-fit">
+      <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:0ms]" />
+      <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:150ms]" />
+      <span className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce [animation-delay:300ms]" />
     </div>
   );
 }
@@ -46,14 +44,14 @@ function ChatMessage({ msg }) {
       <div
         className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 ${
           isBot
-            ? 'bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-lg shadow-emerald-950/50'
-            : 'bg-gradient-to-br from-slate-600 to-slate-800 border border-white/10'
+            ? 'bg-gradient-to-br from-emerald-500 to-emerald-700 shadow-md shadow-emerald-700/20'
+            : 'bg-slate-700 dark:bg-slate-700 text-slate-100 border border-slate-300 dark:border-white/10'
         }`}
       >
         {isBot ? (
           <Sprout className="w-3.5 h-3.5 text-white" />
         ) : (
-          <User className="w-3.5 h-3.5 text-slate-300" />
+          <User className="w-3.5 h-3.5 text-white" />
         )}
       </div>
 
@@ -61,13 +59,13 @@ function ChatMessage({ msg }) {
       <div
         className={`max-w-[82%] px-4 py-3 rounded-2xl text-sm leading-relaxed font-sans whitespace-pre-wrap break-words ${
           isBot
-            ? 'bg-slate-800/80 border border-white/10 text-slate-100 rounded-tl-sm'
-            : 'bg-gradient-to-br from-emerald-600 to-emerald-700 text-white rounded-tr-sm shadow-lg shadow-emerald-950/40'
+            ? 'bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-100 rounded-tl-sm shadow-xs'
+            : 'bg-green-700 dark:bg-gradient-to-br dark:from-emerald-600 dark:to-emerald-700 text-white rounded-tr-sm shadow-md shadow-green-700/20'
         }`}
       >
         {msg.content}
         {msg.searchUsed && (
-          <div className="flex items-center gap-1 mt-2 pt-2 border-t border-white/10 text-[10px] text-emerald-300 font-mono">
+          <div className="flex items-center gap-1 mt-2 pt-2 border-t border-slate-200 dark:border-white/10 text-[10px] text-green-700 dark:text-emerald-300 font-mono font-medium">
             <Globe className="w-3 h-3" />
             <span>Web search used</span>
           </div>
@@ -163,38 +161,33 @@ export default function KrishiBotWidget() {
               height: '580px',
             }}
           >
-            <div className="flex flex-col h-full rounded-2xl overflow-hidden border border-emerald-500/25 shadow-2xl shadow-black/60"
-              style={{
-                background: 'linear-gradient(160deg, #0d1510 0%, #070b09 100%)',
-                backdropFilter: 'blur(24px)',
-              }}
-            >
+            <div className="flex flex-col h-full rounded-2xl overflow-hidden border border-slate-200 dark:border-emerald-500/25 shadow-2xl bg-white dark:bg-[#070b09] backdrop-blur-xl">
               {/* Header */}
-              <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-slate-950/60 shrink-0">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-950/60 shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-950/50">
+                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-md shadow-emerald-700/20">
                     <Sprout className="w-4.5 h-4.5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-white font-display-luxury tracking-tight">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-white font-sans tracking-tight">
                       KrishiBot
                     </h3>
-                    <div className="flex items-center gap-1.5 text-[10px] font-mono text-emerald-400">
-                      <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                    <div className="flex items-center gap-1.5 text-[10px] font-mono text-green-700 dark:text-emerald-400 font-semibold">
+                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
                       <span>Llama-3.3-70B • Tavily Search</span>
                     </div>
                   </div>
                 </div>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                  className="p-2 rounded-xl text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10 transition-colors cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-800 scrollbar-track-transparent">
+              <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 scrollbar-thin scrollbar-thumb-slate-300 dark:scrollbar-thumb-slate-800 scrollbar-track-transparent">
                 {messages.map((msg, idx) => (
                   <ChatMessage key={idx} msg={msg} />
                 ))}
@@ -214,7 +207,7 @@ export default function KrishiBotWidget() {
               {/* Suggested Questions (show only at start) */}
               {messages.length <= 1 && (
                 <div className="px-4 pb-3 shrink-0">
-                  <p className="text-[10px] font-mono text-slate-500 uppercase tracking-wider mb-2">
+                  <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider mb-2">
                     Quick Questions
                   </p>
                   <div className="flex flex-col gap-1.5">
@@ -222,7 +215,7 @@ export default function KrishiBotWidget() {
                       <button
                         key={q}
                         onClick={() => sendMessage(q)}
-                        className="text-left text-xs text-slate-300 hover:text-emerald-300 px-3 py-2 rounded-xl bg-slate-900/60 border border-white/5 hover:border-emerald-500/30 hover:bg-emerald-950/30 transition-all font-sans"
+                        className="text-left text-xs text-slate-700 dark:text-slate-300 hover:text-green-800 dark:hover:text-emerald-300 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-white/5 hover:border-green-400 dark:hover:border-emerald-500/30 hover:bg-green-50 dark:hover:bg-emerald-950/30 transition-all font-medium cursor-pointer"
                       >
                         {q}
                       </button>
@@ -232,8 +225,8 @@ export default function KrishiBotWidget() {
               )}
 
               {/* Input Area */}
-              <div className="px-4 py-3 border-t border-white/10 bg-slate-950/40 shrink-0">
-                <div className="flex items-end gap-2 bg-slate-900/60 border border-white/10 rounded-2xl px-4 py-2.5 focus-within:border-emerald-500/60 transition-colors">
+              <div className="px-4 py-3 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-950/40 shrink-0">
+                <div className="flex items-end gap-2 bg-white dark:bg-slate-900/60 border border-slate-300 dark:border-white/10 rounded-2xl px-4 py-2.5 focus-within:border-green-600 dark:focus-within:border-emerald-500/60 transition-colors shadow-xs">
                   <textarea
                     ref={inputRef}
                     rows={1}
@@ -247,13 +240,13 @@ export default function KrishiBotWidget() {
                     onKeyDown={handleKeyDown}
                     placeholder="Ask about crops, pests, weather..."
                     disabled={loading}
-                    className="flex-1 bg-transparent text-sm text-white placeholder-slate-500 resize-none focus:outline-none font-sans min-h-[20px] max-h-[100px] leading-snug disabled:opacity-50"
+                    className="flex-1 bg-transparent text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 resize-none focus:outline-none font-sans min-h-[20px] max-h-[100px] leading-snug disabled:opacity-50 font-medium"
                     style={{ lineHeight: '1.4' }}
                   />
                   <button
                     onClick={() => sendMessage()}
                     disabled={!input.trim() || loading}
-                    className="p-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-30 disabled:cursor-not-allowed text-slate-950 transition-all flex items-center justify-center shrink-0 shadow-md shadow-emerald-950/50"
+                    className="p-2 rounded-xl bg-green-700 hover:bg-green-600 disabled:opacity-30 disabled:cursor-not-allowed text-white transition-all flex items-center justify-center shrink-0 shadow-md shadow-green-700/20 cursor-pointer"
                   >
                     {loading ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -262,7 +255,7 @@ export default function KrishiBotWidget() {
                     )}
                   </button>
                 </div>
-                <p className="text-[10px] text-slate-600 font-mono mt-1.5 text-center">
+                <p className="text-[10px] text-slate-500 dark:text-slate-500 font-mono mt-1.5 text-center font-medium">
                   Powered by Groq LLaMA-3.3 • Tavily Search
                 </p>
               </div>
@@ -278,7 +271,7 @@ export default function KrishiBotWidget() {
         onClick={() => setIsOpen((o) => !o)}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
-        className="fixed bottom-5 right-5 z-[9999] w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 shadow-2xl shadow-emerald-950/60 flex items-center justify-center text-white"
+        className="fixed bottom-5 right-5 z-[9999] w-14 h-14 rounded-2xl bg-gradient-to-br from-green-600 via-emerald-600 to-teal-700 shadow-2xl flex items-center justify-center text-white cursor-pointer"
         style={{ boxShadow: '0 8px 32px rgba(16,185,129,0.45)' }}
         aria-label="Open KrishiBot chat"
         id="krishibot-fab"
@@ -312,7 +305,7 @@ export default function KrishiBotWidget() {
           <motion.span
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-[#070b09] flex items-center justify-center text-[8px] font-bold text-white"
+            className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-white dark:border-[#070b09] flex items-center justify-center text-[8px] font-bold text-white"
           />
         )}
       </motion.button>
